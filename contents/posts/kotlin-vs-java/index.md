@@ -20,7 +20,7 @@ java는 null에 취약하며, 언제 어느순간에 NullPointerException이 발
 kotlin은 기본적으로 모든 변수가 null을 허용하지 않는다. non-null 변수에 null을 할당하려하면 컴파일 단계에서 실패한다. 필요에 따라 null이 필요할땐 `?` 키워드로 nullable을 표현할 수 있다. 또한 타입 추론을 지원하기 때문에 별도의 타입 정의 없이 nullable 변수를  컴파일 시점에서 체크할 수 있다. 추가적으로 ``` if null else ... ``` 을 한번에 표현할 수 있는 `let` 스코프 함수와 null이 아닐때를 표현하는 `?:` 엘비스 연산자(엘비스 프레슬리 헤어스타일을 닮아서...)를 함께 활용하면 더욱 간결하고 null safe하게 개발이 가능하다.
 
 `Kotlin`
-```kotlin
+```kt
 fun nonNullReturnFunction(): Int {
     val num = 1
     val numOfNullable = nullReturnFunction()
@@ -34,18 +34,13 @@ fun nullReturnFunction(): Int? {
 }
 ```
 
-```js
-alert('click to copy 💾');
-```
-
 ### Extention
 공통적으로 사용되는 범용성 코드를 잘 만들었을때 뽕맛은 개발자라면 공감할 듯하다.
 
 kotlin에서는 extention 확장함수를 지원한다. 어떤 클래스에 함수를 추가하는 기능이며, extention을 붙여놓은 객체에서 내가 만든 메소드를 사용할 수 있기에 마치 라이브러리를 만든 느낌을 받을 수 있다. json를 다루거나, 자주쓰이는 String 기능을 만들거나 등 불필요한 코드 또는 공통의 기능을 만들때 사용하면 좋다. 좋은 기능이나 자유도가 높기에 무차별하게 사용하면 욕먹기 딱 좋을 수 있다. 특정 클래스에서만 사용하거나 특정 컬렉션에서만 사용하는 등 개인적인 이유로 사용하기에는 일반 비즈니스 함수로 명확하게 개발하는것을 추천한다.
 
 `Java`
-{% highlight java %}
-
+```java
 public static int firstPlusNum(Collection<Integer> collection, int num) {
     return collection.stream().findFirst().get() + num;
 }
@@ -55,14 +50,12 @@ public static void main(String[] args) {
     int result = firstPlusNum(list, 100);
     System.out.println(result); // 101
 }
-
-{% endhighlight %}
+```
 
 아래 kotlin 코드를 java 코드로 변환하면 위와 같다. extention은 결국 static 메소드를 생성한다. static 메소드는 GC의 대상이 되지 못하고 어플리케이션이 기동되는 동안에는 메모리에 남아있다. 결국 무분별하게 extention을 사용할 경우 결국 메모리 낭비를 초래할 것이다. 역시 뭐든 적절하게 필요에 따라 사용하는 것이 건강에 좋다.
 
 `Kotlin`
-{% highlight kotlin %}
-
+```kotlin
 fun List<Int>.firstPlusNum(num: Int): Int {
     return this.first() + num
 }
@@ -72,8 +65,7 @@ fun main() {
     val result = list.firstPlusNum(100)
     println(result) // 101
 }
-
-{% endhighlight %}
+```
 
 kotlin에서는 특정 Object 하위의 모든 클래스에는 extention이 적용가능하다. 예시로는 Int타입 List의 첫번째 element에 파라미터로 받은 num값을 더해서 반환하도록 작성했으며, 마치 Collection에서 지원하는 메소드인것 처럼 보여지고 있다. 코드를 읽는 입장에서 심신이 편-안하다. 물론 실무에서 특정 컬렉션 구현체에 제너럴하지 못한 타입으로 extention을 만들어 사용하는 일은 드물다. 예제 코드 정도로만 생각했으면 좋겠다.
 
@@ -82,22 +74,18 @@ kotlin에서는 특정 Object 하위의 모든 클래스에는 extention이 적�
 왜지? 라고 의문을 들 수 있는 kotlin의 특징이 있다. checked exception을 지원하지 않는 것이다. 하지만 이유가 납득된다면 이를 kotlin을 선택한 이유로 꼽을 수 있다. 
 
 `Java`
-{% highlight java %}
-
+```java
 try {
     Thread.sleep(1000);
 } catch (InterruptedException e) {
     throw new RuntimeException(e);
 }
-
-{% endhighlight %}
+```
 
 `Kotlin`
-{% highlight kotlin %}
-
+```kotlin
 Thread.sleep(1000)
-
-{% endhighlight %}
+```
 
 kotlin에서는 Thread에 대한 처리에 대해 묻지도 따지지도 않고 실행 가능하다.
 
@@ -115,8 +103,7 @@ corutine은 비동기 처리를 굉장히 쉽게 처리 할 수 있도록 지원
 
 
 `Java`
-{% highlight java %}
-
+```java
 class Pizza {
     final String name;
     final int minute;
@@ -160,13 +147,11 @@ public class AsyncTest {
         makePizzaAsync(pizzas);
     }
 }
-
-{% endhighlight %}
+```
 
 
 `Kotlin`
-{% highlight kotlin %}
-
+```kotlin
 fun main() {
     val pizzas = listOf(
         Pizza("페퍼로니 피자", 10),
@@ -195,8 +180,7 @@ data class Pizza(
         return this
     }
 }
-
-{% endhighlight %}
+```
 
 ```
 페퍼로니 피자를 10분만에 완성했습니다.
@@ -212,8 +196,7 @@ data class Pizza(
 이젠 스마트폰 없이 안되는 세상, 캐스팅도 스마트 캐스팅 시대. 코드의 `ability` 메소드를 보면 바로 직감할 것이다.
 
 `Java`
-{% highlight java %}
-
+```java
 interface Animal { String getName(); }
 
 class Dog implements Animal {
@@ -261,12 +244,10 @@ public class SmartCastTest {
         throw new RuntimeException("동물이 아닙니다.");
     }
 }
-
-{% endhighlight %}
+```
 
 `Kotlin`
-{% highlight kotlin %}
-
+```kotlin
 interface Animal { val name: String }
 class Dog(override val name: String) : Animal { fun running(): String = "달려요." }
 class Bird(override val name: String) : Animal { fun flying(): String = "날아요." }
@@ -288,8 +269,7 @@ fun main() {
         println("${it.name}는 ${ability(it)}")
     }
 }
-
-{% endhighlight %}
+```
 
 java는 `instanceof` 이후에도 직접 Animal의 구현체로 down casting 해줘야한다. 하지만 kotlin은 `is` 키워드와 함께 캐스팅된 결과를 받고, 이를 바로 사용할 수 있다. 타입 체크와 변환까지 한번에 지원되는 기능이며 `is` 라는 키워드 자체가 가독성 측면에서도 너무 직관적이고 명확하다. 코드길이 차이는 두말할 것 없다.
 
@@ -299,13 +279,12 @@ java는 `instanceof` 이후에도 직접 Animal의 구현체로 down casting 해
 일급시민(First-class citizen)이 될 수 있는 객체를 일급객체(First-class object), 함수를 일급함수(First-class funcation)으로 지칭할 수 있다.
 일급시민이란 아래 요소를 모두 만족하는 대상을 뜻한다. 아래에는 함수를 예제로 작성한다.
 
->1. 변수에 할당할 수 있다.
+1. 변수에 할당할 수 있다.
 2. 객체의 인자로 넘길 수 있다.
 3. 객체의 반환값으로 반환할 수 있다.
 
 `Kotlin`
-{% highlight kotlin %}
-
+```kotlin
 fun main() {
     // 1. 변수에 할당할 수 있다.
     val sum = { x: Int, y: Int -> x + y }
@@ -327,14 +306,12 @@ fun sumFun1(firstClass: (x: Int, y: Int) -> Int): Int {
 fun sumFun2(sum: Int): () -> Int {
     return { sum + 5 }
 }
-
-{% endhighlight %}
+```
 
 그렇다면 java는 어떨까? kotlin에서는 기본적으로 지원하는 lambda가 java에서는 java8부터 지원하며, 이를 이용하면 비슷한 느낌으로는 만들 수 있다.
 
 `Java`
-{% highlight java %}
-
+```java
 @FunctionalInterface
 interface Lambda {
     int sum(int a, int b);
@@ -367,8 +344,7 @@ public class FirstClassJava {
         return justReturn;
     }
 }
-
-{% endhighlight %}
+```
 
 ```
 3
@@ -385,7 +361,7 @@ public class FirstClassJava {
 언어 레벨에서 지원하는 불변성의 효과는 실로 기가막히다.
 
 `Java`
-{% highlight java %}
+```java
 class Person {
     private String name;
     private int age;
@@ -425,13 +401,12 @@ public class FirstClassJava {
         return person;
     }
 }
-
-{% endhighlight %}
+```
 
 실무에서 이렇게 극단적인 코드는 없을것 같다고 생각될 것이다. 하지만 실제로 실무 코드에도 수개의 메소드의 파라미터에 레퍼런스를 받고 이를 변경하고 최종적으로 결과를 받는 형태의 코드는 상당히 많다. 그것도 예제 코드처럼 단순한 변경이 아닌, 수많은 비즈니스 로직과 얽히고 엮여 레퍼런스의 값을 계속 변경, 조작하는 코드들 말이다.
 
 `Kotlin`
-{% highlight kotlin %}
+```kotlin
 data class Person(val name: String, val age: Int)
 
 fun main() {
@@ -453,16 +428,16 @@ fun changeName3(person: Person): Person {
     person.name = person.name + "변경3"
     return person
 }
-{% endhighlight %}
+```
 
 예제 java코드를 kotlin으로 옮기면 위와 같다. 정확히 말하자면 느낌만 옮긴것이다. 위 kotlin 코드는 컴파일되지 않는다. 언어레벨에서 main문에 선언한 `Person` 객체에 선언한 `name` 필드를 `val` 이라는 키워드로 변경불가능한 immutable(final) 변수로 만들었기 때문이다. 어찌보면 `name` 필드의 키워드를 `val`에서 `var`로 변경만 하면 컴파일될 뿐 아니라 java 코드와 동일한 결과를 가져 올 수 있다. 하지만 여기서 얻을 수 있는 인사이트가 있다. 왜 kotlin은 기본적으로 언어 레벨에서 final 키워드를 채택한 것일까? 만약 kotlin 코드에서 `var` 키워드로 바꾸지않고 동일한 결과를 가져 오려면 각 메소드마다 아래와 같이 작성해야할 것이다.
 
-{% highlight kotlin %}
+```kotlin
 fun changeName1(person: Person): Person {
     val newPerson = Person(person.name + "변경1", person.age)
     return newPerson
 }
-{% endhighlight %}
+```
 
 이는 사실상 결과만 같지 다른 코드이다. 레퍼런스의 값을 바꾸는게 아닌, 새로운 객체를 계속 만들어내는 방법이기 때문이다. 결과적으로 레퍼런스를 조작하는 코드는 결코 좋지못한 코드를 양산해낼 가능성이 높다. 즉, kotlin은 레퍼런스의 변경을 최대한 막고 하나의 메소드는 자신의 역할만 충실히 하도록 개발할 수 있도록 언어레벨에서 지원하는 것이다. 이는 결국 OOP원칙 중 SRP(Single Responsibility Principle)에 굉장히 충실할 수 있다고 생각한다. 결과론적으로 immutable의 지원은 유지보수 좋은 코드, 생산성 있는 코드를 만들 수 있다고 생각한다.
 
@@ -489,6 +464,9 @@ fun changeName1(person: Person): Person {
 결국 아래와 같은 타겟에게 kotlin을 추천한다.
 > java 실무 경험이 있으며, 간결하고 명료한 jvm 기반의 코드를 원하는 개발자
 
-{% include ref.html %}
+
+##
+***
+###
 * <https://www.makeuseof.com/kotlin-vs-java/#code-volume-amp-speed-of-coding>
 * <https://kotlinlang.org/docs/comparison-to-java.html#what-kotlin-has-that-java-does-not>
