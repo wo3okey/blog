@@ -66,7 +66,6 @@ const Series = ({ pageContext, data }) => {
       />
 
       <Header>
-        <Subtitle> SERIES </Subtitle>
         <Title> {seriesName} </Title>
 
         <SeriesInform>

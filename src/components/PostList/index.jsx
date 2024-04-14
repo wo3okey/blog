@@ -78,11 +78,8 @@ const PostList = ({ postList }) => {
         return (
           <>
             <PostWrapper>
-            {/* <img src={`/icons/${series}.png`}></img> asd */}
             <CategoryIcon category={series}></CategoryIcon>
               <Title size="bg">
-              {/* <img src={`/icons/${series}.png`}></img> */}
-              
               <Link to={slug}>{title}</Link>
               </Title>
               <Date>{date}</Date>

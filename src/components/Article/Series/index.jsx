@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { Link } from "gatsby"
 
 import { AiOutlineArrowLeft } from "react-icons/ai"
+import CategoryIcon from "components/Icon"
 
 const SeriesWrapper = styled.div`
   margin-bottom: 32px;
@@ -98,9 +99,7 @@ const Series = ({ header, series }) => {
   return (
     <SeriesWrapper>
       <SeriesHeader>
-        <Link to={`/series/${_.replace(header, /\s/g, "-")}`}>
-          {header}
-        </Link>{" "}
+        <CategoryIcon category={header}></CategoryIcon>{" "}
         <span>({series.length})</span>
       </SeriesHeader>
       <PostWrapper>

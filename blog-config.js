@@ -1,6 +1,6 @@
 module.exports = {
   title: "wookey-devlog",
-  description: "wookey임당",
+  description: "개발보다 냥발",
   author: "wookey",
   siteUrl: "https://wo3okey.github.io/blog/",
   links: {
@@ -13,11 +13,11 @@ module.exports = {
     // medium: "https://medium.com",
     // blogger: "https://wo3okey.github.io/por/",
     link: "https://wo3okey.github.io/portfolio/",
-    email: "anbriaao@naver.com",
+    email: "mailto:anbriaao@naver.com",
     // resume: "https://wo3okey.github.io/portfolio/",
   },
   utterances: {
-    repo: "devHudi/gatsby-starter-hoodie",
+    repo: "wookey/gatsby-starter-hoodie",
     type: "pathname",
   },
 }
