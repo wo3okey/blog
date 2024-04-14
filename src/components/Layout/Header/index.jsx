@@ -11,7 +11,7 @@ import {
   FaTags,
   FaRss,
   FaSearch,
-  FaListUl,
+  FaListUl
 } from "react-icons/fa"
 
 const HeaderWrapper = styled.header`
@@ -156,9 +156,9 @@ const Header = ({ toggleTheme }) => {
           <Link to="/series">
             <FaListUl />
           </Link>
-          <Link to="/rss.xml">
+          {/* <Link to="/rss.xml">
             <FaRss />
-          </Link>
+          </Link> */}
           <Link to="/search">
             <FaSearch style={{ marginRight: 0 }} />
           </Link>

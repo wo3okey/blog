@@ -7,6 +7,7 @@ import { Link } from "gatsby"
 import Title from "components/Title"
 import Divider from "components/Divider"
 import TagList from "components/TagList"
+import CategoryIcon from "components/Icon"
 
 const PostListWrapper = styled.div`
   @media (max-width: 768px) {
@@ -70,15 +71,19 @@ const PostList = ({ postList }) => {
   return (
     <PostListWrapper>
       {postList.slice(0, postCount).map((post, i) => {
-        const { title, description, date, tags } = post.frontmatter
+        const { title, description, date, tags, series } = post.frontmatter
         const { excerpt } = post
         const { slug } = post.fields
 
         return (
           <>
             <PostWrapper>
+            {/* <img src={`/icons/${series}.png`}></img> asd */}
+            <CategoryIcon category={series}></CategoryIcon>
               <Title size="bg">
-                <Link to={slug}>{title}</Link>
+              {/* <img src={`/icons/${series}.png`}></img> */}
+              
+              <Link to={slug}>{title}</Link>
               </Title>
               <Date>{date}</Date>
               {description ? (
