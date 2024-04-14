@@ -17,7 +17,7 @@ module.exports = {
     // resume: "https://wo3okey.github.io/portfolio/",
   },
   utterances: {
-    repo: "wookey/gatsby-starter-hoodie",
+    repo: "devHudi/gatsby-starter-hoodie",
     type: "pathname",
   },
 }
