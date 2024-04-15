@@ -39,6 +39,26 @@ const Excerpt = styled.p`
   word-break: break-all;
 `
 
+const SeriesHeader = styled.span`
+  padding-left: 7px;
+  font-size: 18px;
+  color: ${props => props.theme.colors.text};
+
+  & > span {
+    font-weight: normal;
+    color: ${props => props.theme.colors.tertiaryText};
+  }
+
+  & > a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  & > a:hover {
+    text-decoration: underline;
+  }
+`
+
 const checkIsScrollAtBottom = () => {
   return (
     document.documentElement.scrollHeight -
@@ -78,7 +98,10 @@ const PostList = ({ postList }) => {
         return (
           <>
             <PostWrapper>
-            <CategoryIcon category={series}></CategoryIcon>
+              <CategoryIcon category={series}></CategoryIcon>
+              <SeriesHeader>
+                <Link to={`/series/${_.replace(series, /\s/g, "-")}`}>{series}</Link>
+              </SeriesHeader>
               <Title size="bg">
               <Link to={slug}>{title}</Link>
               </Title>

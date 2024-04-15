@@ -42,7 +42,7 @@ const SeriesPage = ({ data }) => {
 
       <TagListWrapper>
         {series.length > 0 && (
-          <Title size="sm">There are {series.length} series.</Title>
+          <Title size="sm">There are {series.length} categories.</Title>
         )}
       </TagListWrapper>
 
