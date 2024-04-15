@@ -2,7 +2,7 @@
 layout: post
 title: spring servelt은 무엇인가?
 description: "
-spring boot로 개발을 시작하거나 또는 오래 하다보면 `servlet`의 개념을 놓치기 쉽다. 간단하게 정리해보자.
+spring boot로 개발을 시작하거나 또는 오래 하다보면 servlet의 개념을 놓치기 쉽다. 간단하게 정리해보자.
 "
 tags: [spring, servelt]
 date: 2023-07-05
