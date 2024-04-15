@@ -2,9 +2,9 @@
   "name": "gatsby-starter-hoodie",
   "private": false,
   "description": "gatsby-starter-hoodie is a gatsby theme developed for developers to write tech blogs.",
-  "homepage": "https://devhudi.github.io/blog/",
+  "homepage": "https://devhudi.github.io/gatsby-starter-hoodie/",
   "version": "0.2.0",
-  "author": "wookey",
+  "author": "Hudi",
   "dependencies": {
     "@deckdeckgo/highlight-code": "^4.4.0",
     "babel-eslint": "^10.1.0",
