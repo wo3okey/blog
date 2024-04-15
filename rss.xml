@@ -1,4 +1,687 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of wookey-devlog]]></title><description><![CDATA[개발보다 냥발]]></description><link>https://wo3okey.github.io/blog</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 15 Apr 2024 02:58:05 GMT</lastBuildDate><item><title><![CDATA[spring AOP의 proxy]]></title><description><![CDATA[AOP AOP(Aspect Oriented Programming)는 컴퓨터 패러다임의 일종으로, 관점 지향 프로그래밍이라 불린다. 이러한 AOP의 메커니즘은 프로그램을 관심사(Concerns…]]></description><link>https://wo3okey.github.io/blog/srping-aop/</link><guid isPermaLink="false">https://wo3okey.github.io/blog/srping-aop/</guid><pubDate>Sat, 07 Oct 2023 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;AOP&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of wookey-devlog]]></title><description><![CDATA[개발보다 냥발]]></description><link>https://wo3okey.github.io/blog</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 15 Apr 2024 10:37:41 GMT</lastBuildDate><item><title><![CDATA[AWS ECS with git action 간단 체크포인트]]></title><description><![CDATA[docker 설치 생략 Dockerfile 작성 적용할 application에 Dockerfile 생성 최신 aws cli 설치 cicd를 구축해놓으면 필요 없지만, cli로 aws에 접속하여 ECR에 이미지를 push 해보려면 필요하다. https…]]></description><link>https://wo3okey.github.io/blog/aws-ecs/</link><guid isPermaLink="false">https://wo3okey.github.io/blog/aws-ecs/</guid><pubDate>Fri, 05 Apr 2024 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;docker 설치&lt;/h2&gt;
+&lt;p&gt;생략&lt;/p&gt;
+&lt;h2&gt;Dockerfile 작성&lt;/h2&gt;
+&lt;p&gt;적용할 application에 Dockerfile 생성&lt;/p&gt;
+&lt;h2&gt;최신 aws cli 설치&lt;/h2&gt;
+&lt;p&gt;cicd를 구축해놓으면 필요 없지만, cli로 aws에 접속하여 ECR에 이미지를 push 해보려면 필요하다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/getting-started-install.html&quot;&gt;https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/getting-started-install.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;VPC, subnet 생성&lt;/h2&gt;
+&lt;p&gt;기본 베이스로 private subnet 2개, public subnet 2개로 세팅 하면 된다.&lt;/p&gt;
+&lt;h2&gt;ECR 생성&lt;/h2&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/0030e50b5aa99be77c2e436b26c23a92/d31ed/aws-ecs-01.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 75.29411764705883%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAPCAYAAADkmO9VAAAACXBIWXMAABYlAAAWJQFJUiTwAAAB/0lEQVR42pWT2ZLaMBBF/f+/lJdU5QPyAANkCAQGb/IuW4sNtm+6JQ/DQzIhrjq0wNJV9+0mSIoa61OKY0hEApuzwElUSIsK+7iEoBjFCcI4RiMl2q77lCBJU+x2O6xfNthsd1itVugUvSQ6h4LS2sEH5Cc4Qf5IUoEsy2GshdYGxli3vmOMx9q/Ygm+NOAMYionSVKMtxvGcXRcr1fHjX57Bj7DooEm1bpukFOGVavRaYuh7zHPM/jh+Az8DMOAQFKJb6JEFMXkgYJsOweX0dOG983PPANVFBjbO4GiLJ3A3T+Kmnybpul/BS3KIsPl7YyubdBbL8RN4AaxjyOJjuP0z2ydoKJDYa7xK5EICxKXloQ/5qpuJKRsUZHPfMm7Z9M0u+z92kfnYdMZfHu1+Lq1+LLW+H5okNJs8ihx52NCZBnCMHK0zuP2YyZpzZYppb0gl6e7BkpWMFqSf943D92+ZODLHmlExmVUfLwu8J6lZI3zJcTL9gdOYYK6Neh73xS+lcvkPTxe3lcaLZoGS81k2GdOqu8H11SXYSoEQhobfnmfPfjsuA/zwzxyprdxyfgB3nsXPDcDDpnEMa2xT0q8Rjl+UjyKGoe0wu4isI9KWtcQ6oaiBwo7Lcz32Oie/3oaRTcgkwZZoykqiEbRWiGX2vH4vdIDanP9I60y+A3XQYYoyS+PBQAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;aws ecs 01&apos; title=&apos;&apos; src=&apos;/blog/static/0030e50b5aa99be77c2e436b26c23a92/ca1dc/aws-ecs-01.png&apos; srcset=&apos;/blog/static/0030e50b5aa99be77c2e436b26c23a92/e7570/aws-ecs-01.png 170w,
+/blog/static/0030e50b5aa99be77c2e436b26c23a92/f46e7/aws-ecs-01.png 340w,
+/blog/static/0030e50b5aa99be77c2e436b26c23a92/ca1dc/aws-ecs-01.png 680w,
+/blog/static/0030e50b5aa99be77c2e436b26c23a92/02d09/aws-ecs-01.png 1020w,
+/blog/static/0030e50b5aa99be77c2e436b26c23a92/9d567/aws-ecs-01.png 1360w,
+/blog/static/0030e50b5aa99be77c2e436b26c23a92/d31ed/aws-ecs-01.png 1434w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;ECR push&lt;/h2&gt;
+&lt;p&gt;Dockerfile이 있는 경로로 이동하여 ECR에 이미지를 build 및 push 진행하면 된다.&lt;/p&gt;
+&lt;p&gt;만약 push할 때 권한 에러가 발생하면 access key를 발급하여, ~/.aws/config에 profile을 등록하여 ECR에 로그인할 때 profile 옵션을 주고 로그인하여, push를 진행하면 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;vi&lt;/span&gt; ~/.aws/config&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;{% highlight text %}
+[profile wookey]
+region = ap-northeast-2
+aws&lt;em&gt;access&lt;/em&gt;key&lt;em&gt;id = [public key]
+aws&lt;/em&gt;secret&lt;em&gt;access&lt;/em&gt;key = [private key]&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;이후 순서대로 진행하여 aws ECR에 docker 이미지를 올린다. 미리 생성해둔 ECR 레포지토리를 선택하면 `푸시 명령보기`가 활성되고, 아래 내용은 해당 모달창에 있는 사항을 그대로 옮긴것이다.
+* login
+```sh
+aws ecr get-login-password --profile [본인이 설정한 profile 명] --region ap-northeast-2 | docker login --username AWS --password-stdin [aws 유저 아이디].dkr.ecr.ap-northeast-2.amazonaws.com&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;build image&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; build &lt;span class=&quot;token parameter variable&quot;&gt;--platform&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;linux/amd64&quot;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;docker image 이름&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;tag&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; tag &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;docker image 이름:tag&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;aws 유저 아이디&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;.dkr.ecr.ap-northeast-2.amazonaws.com/&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;docker image 이름:tag&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;push&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; push &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;aws 유저 아이디&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;.dkr.ecr.ap-northeast-2.amazonaws.com/&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;docker image 이름:tag&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;ECS 클러스터 생성&lt;/h2&gt;
+&lt;p&gt;fargate로 클러스터를 생성해준다. 간단하게 진행하는거면 ec2보다 간단하고 비용적으로도 합리적일 수 있다.&lt;/p&gt;
+&lt;h2&gt;ECS 태스크 정의&lt;/h2&gt;
+&lt;p&gt;ECR이미지 정보 입력 및 애플리케이션 컨테이너에 사용될 포트(8080)를 매핑한다.&lt;/p&gt;
+&lt;p&gt;만약 환경변수가 필요하다면 직접 값으로 넣어줘도 되고, ValueForm으로 S3, SSM 등 적절한 도구를 선택해서 arn url 형태로 넣어도 된다.&lt;/p&gt;
+&lt;p&gt;cpu 및 메모리는 0.5 vCPU, 1 GB로 간단하게 구성했다.&lt;/p&gt;
+&lt;h2&gt;ECS 서비스 생성&lt;/h2&gt;
+&lt;p&gt;태스크의 서비스를 생성한다. 이 또한 fargate로 생성했다.&lt;/p&gt;
+&lt;p&gt;네트워크 정보는 public으로 등록하며, 선택적으로 로드밸런서 및 auto 오토스케일링 등록을 할 수 있다.&lt;/p&gt;
+&lt;p&gt;만약 로드밸런스를 연결한다면 보안 그룹에 80 포트를 열어두도록 한다.&lt;/p&gt;
+&lt;p&gt;서비스 생성 및 컨테이너가 정상 기동되면 아래와 같이 정상적으로 태스크가 실행중인 모습이 나온다.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/fed8fd8c5d72220fc0cc4c7eebc577ac/5d3a1/aws-ecs-02.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 50%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAABYlAAAWJQFJUiTwAAABkUlEQVR42n1TXW/jIBDk//+ze71T76FXqZHaOIYYsPnG2J7bJVWT9qGWRovHMMvOrsXTvxOeXk44K4NRW1wmi5FgrMXi3I/QxkBeJ1wnTZgwaQNxGQYoKVFrwVYzGsVSClLOX5CJy+UrF1OCDwHehx6d9xDL4hBjRF1XqLTD5EaCCfu+4/gAr0OISCnfuW2jc6knP44d/LTWICatMc8zMmX8Yw6c3Ia1RRy4PzfBQAfvLK970gduoyQipdttHje2tgHfBDnhd67W9YE5SJBuaGaHeVkIFMloS2tDN2Y/uj8/wH2uaW+uhBVikFdMxnYx7hyLG/shSN6GyN6lHvkwR+f8Z0JHZ3ws8PIZbvgNYan1M23IuaCSwdztlRpUa+0lcQelUt185oOPGIaxN5JtYL6SQ0X9RXj7BRFjhqI54i6yqSzE2XukUmKKkFL17z56vL6/4v1yRqkNgW6uremieklYUoXgEkc9U7m3Mhi3IaVhNVfiyQKyxJIN/P5yfsabOtMPMEPSIEs9gkePfwrnA/4DLkEDf6QEJxUAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;aws ecs 02&apos; title=&apos;&apos; src=&apos;/blog/static/fed8fd8c5d72220fc0cc4c7eebc577ac/ca1dc/aws-ecs-02.png&apos; srcset=&apos;/blog/static/fed8fd8c5d72220fc0cc4c7eebc577ac/e7570/aws-ecs-02.png 170w,
+/blog/static/fed8fd8c5d72220fc0cc4c7eebc577ac/f46e7/aws-ecs-02.png 340w,
+/blog/static/fed8fd8c5d72220fc0cc4c7eebc577ac/ca1dc/aws-ecs-02.png 680w,
+/blog/static/fed8fd8c5d72220fc0cc4c7eebc577ac/02d09/aws-ecs-02.png 1020w,
+/blog/static/fed8fd8c5d72220fc0cc4c7eebc577ac/9d567/aws-ecs-02.png 1360w,
+/blog/static/fed8fd8c5d72220fc0cc4c7eebc577ac/5d3a1/aws-ecs-02.png 2124w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;CICD with git action&lt;/h2&gt;
+&lt;p&gt;먼저 AWS연결을 위한 access key를 등록한다.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/da42f8bcf48b7d2fade40e05f18a0bcb/6e199/aws-ecs-03.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 76.47058823529412%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAPCAYAAADkmO9VAAAACXBIWXMAABYlAAAWJQFJUiTwAAAB7klEQVR42qVT2Y7aQBD0M1kwxje+xhfYYO7VJlKyUpQ85f8/qNLVG5CXkChSHkpjZujq6u5qyw1zhEmJqRMqnuYBbHeJst0oqtVWzh5tt4fjJ5jMPHyw/d/AOMZbJAyWBrNFdCNk4GpzQtmdka8vSJsjsvaAtB6EfIui2cDIWa93Ct6l5Vo5rEDU9ftnFHWvFyT0ogzD+TO6y1e0529oDq+oNs+oBevtCU1/EOXDjYzfN0IvKpCaFdwwu5VtuzHirEKUlogS8wZ+KyosgvRW4rhVhOXHBsu80T6MCZkkSmtEWa2ZH/XrEaw4a5BLuWNCKjDNRsshqJ6ks1Gg/r6DElLdcHyBHxfvMnOaV7z1NRfVayTFSvs1dsaYVBTW2ty5t3yn8tqTK/hu2uHXhAf44gx9mwaYTMRKgqkd0DaZ2oTs15PBTMQBENfp36t+EgKvN8hee6RfOixMBiuSaXa7i9qGJFRJ4t3pE1p6UdS4Uu5CEvMcw/FTVB/36H+8oP5+hNcY6aHp0O/OKGUjQrGF4y/hBIlOPuGkJclcEtii+h4zcUMYV/B9g7ktd4700JFNMU2vJLYXK+FcTm4PFRNU/MgqvHNlCbw416Q6FPYwKdqHfx7jT767f7fY9JWsE0v8W+C/wuJWsCSa+X/JSPgTaqmAVdriE/8AAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;aws ecs 03&apos; title=&apos;&apos; src=&apos;/blog/static/da42f8bcf48b7d2fade40e05f18a0bcb/ca1dc/aws-ecs-03.png&apos; srcset=&apos;/blog/static/da42f8bcf48b7d2fade40e05f18a0bcb/e7570/aws-ecs-03.png 170w,
+/blog/static/da42f8bcf48b7d2fade40e05f18a0bcb/f46e7/aws-ecs-03.png 340w,
+/blog/static/da42f8bcf48b7d2fade40e05f18a0bcb/ca1dc/aws-ecs-03.png 680w,
+/blog/static/da42f8bcf48b7d2fade40e05f18a0bcb/02d09/aws-ecs-03.png 1020w,
+/blog/static/da42f8bcf48b7d2fade40e05f18a0bcb/9d567/aws-ecs-03.png 1360w,
+/blog/static/da42f8bcf48b7d2fade40e05f18a0bcb/6e199/aws-ecs-03.png 2282w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;이후 action을 등록할 git repository에서 Action 탭 이동 후 워크플로우를 등록한다. &lt;/p&gt;
+&lt;p&gt;ECS를 검색하면 deploy를 위한 서비스를 지원하며, Configure을 누르면 yml 파일을 하나 커밋하여 레포에 등록하도록 한다.&lt;/p&gt;
+&lt;p&gt;아래는 간단하게 등록한 파일이니, env 정보만 변경해서 사용하면 된다.&lt;/p&gt;
+&lt;p&gt;참고로 &lt;code class=&quot;language-text&quot;&gt;ECS_TASK_DEFINITION&lt;/code&gt; 값은 ECS task의 json파일을 다운받고, 이를 애플리케이션의 root(Dockerfile과 동일)에 두면 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;name: Deploy to Amazon ECS
+
+on:
+  push:
+    branches: &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;master&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+env:
+  AWS_REGION: ap-northeast-2
+  ECR_REPOSITORY: &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;레포지토리 명&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+  ECS_SERVICE: &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;ecs 서비스 명&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+  ECS_CLUSTER: &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;ecs 클러스터 명&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+  ECS_TASK_DEFINITION: &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;task json &lt;span class=&quot;token function&quot;&gt;file&lt;/span&gt; 이름&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;확장자 포함&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+  CONTAINER_NAME: &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;ecs task 컨테이너 명&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK &lt;span class=&quot;token number&quot;&gt;17&lt;/span&gt;
+        uses: actions/setup-java@v3
+        with:
+          java-version: &lt;span class=&quot;token string&quot;&gt;&apos;17&apos;&lt;/span&gt;
+          distribution: &lt;span class=&quot;token string&quot;&gt;&apos;adopt&apos;&lt;/span&gt;
+
+      - name: Grant execute permission &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; gradlew
+        run: &lt;span class=&quot;token function&quot;&gt;chmod&lt;/span&gt; +x gradlew
+
+      - name: build with gradle
+        run: ./gradlew clean build &lt;span class=&quot;token parameter variable&quot;&gt;-x&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;test&lt;/span&gt;
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: &lt;span class=&quot;token variable&quot;&gt;${{ secrets.AWS_ACCESS_KEY_ID }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          aws-secret-access-key: &lt;span class=&quot;token variable&quot;&gt;${{ secrets.AWS_SECRET_ACCESS_KEY }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          aws-region: &lt;span class=&quot;token variable&quot;&gt;${{ env.AWS_REGION }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: &lt;span class=&quot;token variable&quot;&gt;${{ steps.login-ecr.outputs.registry }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          IMAGE_TAG: &lt;span class=&quot;token variable&quot;&gt;${{ github.sha }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+        run: &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;
+          &lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; build &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;$ECR_REGISTRY&lt;/span&gt;/&lt;span class=&quot;token variable&quot;&gt;$ECR_REPOSITORY&lt;/span&gt;&lt;span class=&quot;token builtin class-name&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;$IMAGE_TAG&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;
+          &lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; push &lt;span class=&quot;token variable&quot;&gt;$ECR_REGISTRY&lt;/span&gt;/&lt;span class=&quot;token variable&quot;&gt;$ECR_REPOSITORY&lt;/span&gt;&lt;span class=&quot;token builtin class-name&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;$IMAGE_TAG&lt;/span&gt;
+          &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;image=&lt;span class=&quot;token variable&quot;&gt;$ECR_REGISTRY&lt;/span&gt;/&lt;span class=&quot;token variable&quot;&gt;$ECR_REPOSITORY&lt;/span&gt;:&lt;span class=&quot;token variable&quot;&gt;$IMAGE_TAG&lt;/span&gt;&quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;$GITHUB_OUTPUT&lt;/span&gt;
+
+      - name: Fill &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; the new image ID &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: &lt;span class=&quot;token variable&quot;&gt;${{ env.ECS_TASK_DEFINITION }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          container-name: &lt;span class=&quot;token variable&quot;&gt;${{ env.CONTAINER_NAME }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          image: &lt;span class=&quot;token variable&quot;&gt;${{ steps.build-image.outputs.image }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: &lt;span class=&quot;token variable&quot;&gt;${{ steps.task-def.outputs.task-definition }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          service: &lt;span class=&quot;token variable&quot;&gt;${{ env.ECS_SERVICE }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          cluster: &lt;span class=&quot;token variable&quot;&gt;${{ env.ECS_CLUSTER }&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          wait-for-service-stability: &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;정상적으로 ECS에 CI/CD가 적용된 모습이다.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/edae7d7d710c686c9a674e8b2dd16cdf/f722d/aws-ecs-04.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 26.47058823529412%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAFCAYAAABFA8wzAAAACXBIWXMAABYlAAAWJQFJUiTwAAAA3UlEQVR42lVQ2W7DMAzLY4c08ZHYjq/YadN12P//HycJa4E+ELpsktIQyw2T9rC+IqSOXO9IBBeb9F+YTcBlNB/4ulqZXZWTfJxXDO38hSci6wuMy9jqA+V4Ygk7tCsCQ2KG5jbUDyzbDp8PrLELh6M45OMHuZ80LFB2g6/ksn9j8Ts9bFi3JmSaxPSaYUKnWCSXmgRDvokA10NuD3Ezku1JBTgiTO2kYRLXDLVETLQyQ3k6BQm/6plyPg9HxsC2eVV5oANsrHD/J2ChRZTT+wMTziTwrinnTZT0Iv4A9Px9lADgH20AAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;aws ecs 04&apos; title=&apos;&apos; src=&apos;/blog/static/edae7d7d710c686c9a674e8b2dd16cdf/ca1dc/aws-ecs-04.png&apos; srcset=&apos;/blog/static/edae7d7d710c686c9a674e8b2dd16cdf/e7570/aws-ecs-04.png 170w,
+/blog/static/edae7d7d710c686c9a674e8b2dd16cdf/f46e7/aws-ecs-04.png 340w,
+/blog/static/edae7d7d710c686c9a674e8b2dd16cdf/ca1dc/aws-ecs-04.png 680w,
+/blog/static/edae7d7d710c686c9a674e8b2dd16cdf/02d09/aws-ecs-04.png 1020w,
+/blog/static/edae7d7d710c686c9a674e8b2dd16cdf/9d567/aws-ecs-04.png 1360w,
+/blog/static/edae7d7d710c686c9a674e8b2dd16cdf/f722d/aws-ecs-04.png 3294w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h3&gt;&lt;/h3&gt;
+&lt;hr&gt;
+&lt;h4&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://ksh-coding.tistory.com/134##2-2.%20Task%20%26%20Task%20Definition-1&quot;&gt;https://ksh-coding.tistory.com/134##2-2.%20Task%20%26%20Task%20Definition-1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://kobumddaring.tistory.com/76&quot;&gt;https://kobumddaring.tistory.com/76&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://velog.io/@ekxk1234/ECS-%EC%B2%B4%ED%97%98%EA%B8%B0&quot;&gt;https://velog.io/@ekxk1234/ECS-%EC%B2%B4%ED%97%98%EA%B8%B0&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[간단한 jenkins docker CI/CD 구성]]></title><description><![CDATA[AWS EC2에 Jenkins를 설치 및 어플리케이션 서버를 위한 추가적인 ec2 서버를 구성하면 좋지만, jenkins를 설치하기에는 프리티어 메모리 문제도 있으며, 추가적인 ec…]]></description><link>https://wo3okey.github.io/blog/jenkins-cicd/</link><guid isPermaLink="false">https://wo3okey.github.io/blog/jenkins-cicd/</guid><pubDate>Sun, 24 Mar 2024 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;AWS EC2에 Jenkins를 설치 및 어플리케이션 서버를 위한 추가적인 ec2 서버를 구성하면 좋지만, jenkins를 설치하기에는 프리티어 메모리 문제도 있으며, 추가적인 ec2 인스턴스를 기동시 비용 문제가 발생될 수 있다. 그래서 jenkins는 로컬에서 설치하며 어플리케이션 서버는 ec2로 구성하여 AWS 프리티어에서 가능한 수준의 간단한 CI/CD 구축을 해본다.&lt;/p&gt;
+&lt;h2&gt;local docker 설치&lt;/h2&gt;
+&lt;p&gt;도커 설치법은 생략한다. 도커 데스크탑까지 설치하면 좋다.&lt;/p&gt;
+&lt;h2&gt;docker jenkins pull&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; pull jenkins/jenkins:lts&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;docker jenkins run&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; volume create volume-jenkins&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; network create cicd-net&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-it&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;token parameter variable&quot;&gt;--name&lt;/span&gt; jenkins &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;token parameter variable&quot;&gt;--net&lt;/span&gt; cicd-net &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;:8080 &lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;50000&lt;/span&gt;:50000 &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;token parameter variable&quot;&gt;-v&lt;/span&gt; volume-jenkins:/var/jenkins_home &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;token parameter variable&quot;&gt;-v&lt;/span&gt; /var/run/docker.sock:/var/run/docker.sock &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+jenkins/jenkins:lts&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;docker 컨테이너 종료 및 삭제 이후에도 설정을 유지하려면 volume 설정을 해주면 좋다. 그리고 docker 엔진은 host OS의 /var/run/docker.sock 아래에 마운트 된 unix 소켓을 사용한다.
+docker.sock은 도커 컨테이너 내부에서 데몬과 상호 작용을 할 수 있게 해주는 unix 소캣이다.&lt;/p&gt;
+&lt;p&gt;만약 권한 문제가 발생한다면 아래와 같이 권한을 주면 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;chmod&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;666&lt;/span&gt; /var/run/docker.sock&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;jenkins 접속 및 설치&lt;/h2&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/6c46ece2ee4f789c45993255b4cd9733/10796/jenkins-cicd-01.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 70.58823529411764%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAOCAYAAAAvxDzwAAAACXBIWXMAABYlAAAWJQFJUiTwAAABWUlEQVR42p2TXVbDIBCFs/8V+Og+fHEHteqLrQvQpmkCJEDIz3VuWhLaejytnHPDQMjHnYFkVVWhKAporTEMw5XGcTzTb3Opsq7rQIUQsMTdHPd9P8dxfKl0k4wTzlqs12u8vKyw2Wyw3W7x/vaKlYzzPAcbF9/SMi4ktJTU8+KAoqxwUEriEgeJWYpGNqybBnVdw1oH5xZxTOczkA9adrJYqwZKW1TslUCMhdUGtdKSxRHAj8dTimmdz4DjMCKYBp2uJwUBUG2l4Us19X0bELMhhDVvxDV15ZATX9877KRe+/0eznt438K3iWSODtkToqQsqSJ0TrmdIB6tfDydWEwnKrk2XEOHFONjLe0CvKcRGl0SwoNiTPi/gHRICNMkiA5Z17Ma3trowhgzAaOjxbnoXiBrxV+VKf95sW8V02Xdprt48c64gNp39wHTCzyPTxs9PH3g8fkTP27cSmRrXU4gAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 01&apos; title=&apos;&apos; src=&apos;/blog/static/6c46ece2ee4f789c45993255b4cd9733/ca1dc/jenkins-cicd-01.png&apos; srcset=&apos;/blog/static/6c46ece2ee4f789c45993255b4cd9733/e7570/jenkins-cicd-01.png 170w,
+/blog/static/6c46ece2ee4f789c45993255b4cd9733/f46e7/jenkins-cicd-01.png 340w,
+/blog/static/6c46ece2ee4f789c45993255b4cd9733/ca1dc/jenkins-cicd-01.png 680w,
+/blog/static/6c46ece2ee4f789c45993255b4cd9733/02d09/jenkins-cicd-01.png 1020w,
+/blog/static/6c46ece2ee4f789c45993255b4cd9733/10796/jenkins-cicd-01.png 1354w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;http://localhost:8080/&lt;/code&gt;에 접속하면 설치를 위한 초기 패스워드를 입력이 필요하다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--user&lt;/span&gt; root jenkins /bin/bash&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;docker 컨테이너에 root 권한으로 접속한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /var/jenkins_home/secrets/initialAdminPassword&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;초기 패스워드 정보는 위 경로에서 확인할 수 있으며, 해당 값을 입력 후 설치를 진행한다.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/4c152e6d487cf250b9416a31532d8544/f967b/jenkins-cicd-02.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 67.05882352941177%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAACXBIWXMAABYlAAAWJQFJUiTwAAAB30lEQVR42p2TyXLbMAyG9f4P0kubc0/NtZcmmbRJVC+yTe2iSFGyLK+S/gJo3DqZdDJTez4LxPIDJGWvbVs458DPvu/fZBgGYRzHd/GOxyNOpxMGWvT9gH74jayfn0eKn575V8M/guw4HPZIYwWdp7BlAasLsZ0tYXT+dwL6vvfx+Odw6vHpyw1xiw+fv+Lq+k7WV8RHslO3o6wRA+1gHEaB7cspuaEINpsaddvgKbH4ERmixL0q8JhWeIgNbhcZgiRH263hWidU6wpN16Dbdui6DpvNBvv9nnZ6gHez+obv8T0C62PhJpjoR0z1E9JDhGU9pUZ38PMH+OSb2TlWlYJyCmmXQVcaoQqR5zl2ux222y08P/LBBDrAwiyxsgoroxA3CZZk+/FPLCg2L2bISaCp1zIVC1RVBaUUmqYBXy77vChOUBQFTGlgjUXtarE5yZE9nUwRzANEYQRrnYhoujTe5lnQGCNrmZAFtdbitNaioneyLLUEXV1jPp8hTVPylQLn8gCcyzVZlklznk4mTJJECjjAZ6FJjAs5OafCNEvFz/E4jl8QhqHADfgY+M8hgq8TmSiKEDMXPs69hBux/zyxCL4Wuix4q9ElPDXnnY+Mt+6x83+RM6eLYXg6vpRfgaHS/QeDGdsAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 02&apos; title=&apos;&apos; src=&apos;/blog/static/4c152e6d487cf250b9416a31532d8544/ca1dc/jenkins-cicd-02.png&apos; srcset=&apos;/blog/static/4c152e6d487cf250b9416a31532d8544/e7570/jenkins-cicd-02.png 170w,
+/blog/static/4c152e6d487cf250b9416a31532d8544/f46e7/jenkins-cicd-02.png 340w,
+/blog/static/4c152e6d487cf250b9416a31532d8544/ca1dc/jenkins-cicd-02.png 680w,
+/blog/static/4c152e6d487cf250b9416a31532d8544/02d09/jenkins-cicd-02.png 1020w,
+/blog/static/4c152e6d487cf250b9416a31532d8544/9d567/jenkins-cicd-02.png 1360w,
+/blog/static/4c152e6d487cf250b9416a31532d8544/f967b/jenkins-cicd-02.png 1418w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Install suggested plugins 를 클릭하여 기본 플러그인을 설치하면 위 처럼 설치가 진행된다.
+이후, 계정 및 간단한 이름을 등록하면 젠킨스를 시작할 수 있다.&lt;/p&gt;
+&lt;h2&gt;jenkins 설정&lt;/h2&gt;
+&lt;h3&gt;jenkins private key 등록&lt;/h3&gt;
+&lt;p&gt;jenkins에 ssh 접속을 위한 과정이다. jenkins 내에서 자격 등록을 위해 private key를 등록하고, public key를 git에 등록할 예정이다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--user&lt;/span&gt; root jenkins /bin/bash&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이미 접속해있다면 상관없고, jenkins 컨테이너에 접속 한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;ssh-keygen&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ssh key를 생성한다. 명령어 입력 후 엔터 계속 클릭하면 생성이 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token builtin class-name&quot;&gt;cd&lt;/span&gt; /root/.ssh/
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; id_rsa
+&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; id_rsa.pub&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;위 경로에 private key &lt;code class=&quot;language-text&quot;&gt;id_rsa&lt;/code&gt; 및 public key &lt;code class=&quot;language-text&quot;&gt;id_rsa.pub&lt;/code&gt; 가 각각 잘 생성되었는지 확인한다.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/46e4369cf4cdc1e64881c96005dedfc7/9c796/jenkins-cicd-06.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 110.00000000000001%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAWCAYAAADAQbwGAAAACXBIWXMAABYlAAAWJQFJUiTwAAABl0lEQVR42q2Uy1KEMBBF51v9KD/BtXuX7tzpzqVVzgMYHiGBJARy7Q5gSY06BE1VF03P1OH2I707nTIkyRlVJcF+XTfk18iyHFI2ISaEwvGY4nBIwjv7WVZAa3thO9Dx3vMDZVnRH89I0wz7/ZFANWLPApjnBcFSeuak4kRqNwLno1SDttFwrg9mrEXXOfTDsNoWQG0MCkqbUxe1pFoKGGPBCQyDD9b3w6+2APIXzpQ2A63tgkIGam3Qtjr40cBaqqCyJoUlKeTGCDGqlUrFAZ1zUE1DP/TwU8xPNjfvmi2BBOoIOteK39305dHvI1OmgKBR4Rpyg2K6+22XWQEXny2MyxU1qxS2Woeucj3CqKyo2481HFOWYcAZ1PsR6EIN19kFkIM8f82klBVzozbVkAOWaidJJc+hpJmUUoZx2nSXuSllKWiIK2w9FwoNXTneOkVRfG6hPwFHiP8fhZZWVkKbOKUlOxB83jAxtgB6gmCap/mqxVoADlOGT28dbh8Vnt+7aRlsTHkG3r9o3NxVeHg1+BqPAX4AWS/ENcl4o+8AAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 06&apos; title=&apos;&apos; src=&apos;/blog/static/46e4369cf4cdc1e64881c96005dedfc7/ca1dc/jenkins-cicd-06.png&apos; srcset=&apos;/blog/static/46e4369cf4cdc1e64881c96005dedfc7/e7570/jenkins-cicd-06.png 170w,
+/blog/static/46e4369cf4cdc1e64881c96005dedfc7/f46e7/jenkins-cicd-06.png 340w,
+/blog/static/46e4369cf4cdc1e64881c96005dedfc7/ca1dc/jenkins-cicd-06.png 680w,
+/blog/static/46e4369cf4cdc1e64881c96005dedfc7/02d09/jenkins-cicd-06.png 1020w,
+/blog/static/46e4369cf4cdc1e64881c96005dedfc7/9d567/jenkins-cicd-06.png 1360w,
+/blog/static/46e4369cf4cdc1e64881c96005dedfc7/9c796/jenkins-cicd-06.png 1708w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Setting &gt; Developer settings &gt; Personal access tokens &gt; tokens(classic) &gt; Generate new token(classic)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;위 경로에서 ssh private 자격을 등록한다. &lt;code class=&quot;language-text&quot;&gt;SSH Username with private key&lt;/code&gt; 타입으로 등록하며, ID는 아무거나 작성해도 좋다. 나는 ssh로 작성했다. 그리고 private key를 작성할때는 &lt;code class=&quot;language-text&quot;&gt;id_rsa&lt;/code&gt; 파일의 전체 정보를 넣으면 된다. 반드시 &lt;code class=&quot;language-text&quot;&gt;-----BEGIN OPENSSH PRIVATE KEY-----&lt;/code&gt; 문구 부터 &lt;code class=&quot;language-text&quot;&gt;-----END OPENSSH PRIVATE KEY-----&lt;/code&gt; 까지 끝까지 다 넣어주도록 한다.&lt;/p&gt;
+&lt;h4&gt;github jenkins public key 등록&lt;/h4&gt;
+&lt;p&gt;방금 등록한 private ssh와 대응되도록 git에는 public ssh를 등록한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;github &gt; 등록할 레포지토리 &gt; Settings &gt; Deploy keys &gt; Add deploy key&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이름은 편하게 짓고, jenkins 컨테이너의 &lt;code class=&quot;language-text&quot;&gt;id_rsa.pub&lt;/code&gt; 파일 내용을 그대로 넣어주면 정상적으로 등록된다.&lt;/p&gt;
+&lt;h3&gt;github developer token 발급&lt;/h3&gt;
+&lt;p&gt;github에서 아래 경로로 이동 후 토큰을 발급한다. 이제는 jenkins에서 git에 연결하고 개발 관련 컨트롤을 하기 위함이다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;전체 메뉴의 Setting &gt; Developer settings &gt; Personal access tokens &gt; tokens(classic) &gt; Generate new token(classic)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/d893e3fe595bbeb8e1e43951893323d3/b25d8/jenkins-cicd-03.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 108.23529411764706%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAWCAYAAADAQbwGAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC20lEQVR42pVV13LbMBDUq6NCir2AYG8SKarEkjwp//9Xmzuo2JFFT/KwcwQILO/2CieWJ5EUKyztEN8WFua6C83wEdNeWnVIy7V6n9NzXq0R5y2mdG66MDFjq9mY6c7dTjyR4XD+jWq1hRummBkONMun9Q797oT18Ipue0SzOaHoz8i7I2S1Q0SQ9R4ibSHiEiKpEMgCEzcqMBzOqLu9IrTjBEtXICOPHFrznh/lsEUBU1SwwhJ2VMMMSoWlE0G3AhUh24luCxjOZaFeWCE001cfCOmrOh3UaF9T73y6SOcI8yWFqLFENj07d0w47kfMly7p1yOIa0x1D3MjwMIM6dnFy9zGy8LGN80he8P73oQvf4aDMk/Qr0pUZJsyU6jyGEUqCdHVyvu6zGIkMnxOuKBwNl2D42HAa5cQMnxfJzj2KU6bTNnb83koyOZ425bYNfIz4YzLhjQs2x5F08F2QziegONftNYsAdZddySd86AtLYJNTljQjdGQXay2Z1U6LpWVR1kOZImoHBCUewTFFl42QLPl9bx3x1PCKYkrs4bK6Q1R2tyLNqR6S4oWUVKSR5S8awI/4ikhX47SCtvXH4qECVkGQeQyX6ku4g6b/Q8hVz23nOlGWBieInTFpdBVA/jJexLp/Q0jIdvUwyscTr8QEjGv+bBIa+rllbLsbZjUfxGPesjgHi/bQQ0D9pg9dIKU9nNlVUvSx5wgudfuKCF7VNQ9dqShSVp91DDKKClZo8DectK4101XqjPjGtKhtj/AJg+4nzlkRZZeyOSVjEvKcITCqIZMKKg0NvuzGmv8ZT7MtchZ92lCsXa8/zgDvswy12HRbO4hB0QWUUJYx7nhfcrwl4RpPaCjAZuTlrzmC5yEMK6Uh0tqv2d3RwllVmF3/KlCfk9KTdq1ylMeqJd2+9dO4ZFOF1ls3ruVDXcIk92S8IhxD8kb/g0w0Y2QB4UbZmqyP+p3I/wDuDw4HkqCOB8AAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 03&apos; title=&apos;&apos; src=&apos;/blog/static/d893e3fe595bbeb8e1e43951893323d3/ca1dc/jenkins-cicd-03.png&apos; srcset=&apos;/blog/static/d893e3fe595bbeb8e1e43951893323d3/e7570/jenkins-cicd-03.png 170w,
+/blog/static/d893e3fe595bbeb8e1e43951893323d3/f46e7/jenkins-cicd-03.png 340w,
+/blog/static/d893e3fe595bbeb8e1e43951893323d3/ca1dc/jenkins-cicd-03.png 680w,
+/blog/static/d893e3fe595bbeb8e1e43951893323d3/02d09/jenkins-cicd-03.png 1020w,
+/blog/static/d893e3fe595bbeb8e1e43951893323d3/b25d8/jenkins-cicd-03.png 1117w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;토큰의 권한은 레포를 관리할 수 있는 최소한만 줘도 된다. 토큰 이름은 jenkins로 지었으며, 토큰 만료기간은 따로 설정하지 않았다.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/3991ce5db6e87ba8359a0841c3af73b8/6efed/jenkins-cicd-04.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 23.52941176470588%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAFCAYAAABFA8wzAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+0lEQVR42k2QyW6EMBBEOSfA2JjFGzYYENuMRspyyCn//1WVtslhDk+22u2q6s7G5UTVWryVNQoukbMWxi+I9WE+EmF9QFMt9uSsQUHEPjuumPcn3HzC9QHOjsi+f36xPT6h3YxCdMh5C9XPcGGHJzE3Henuph12WCD9AW42lJUEqzV4Yy6EAiOy8/mF7f4BaQIaP4C1Co0OsH5C70c4qik7oFGeBBRu9KkUmqbpklCcjtEp1QCjKaGkmLV06VG0fXKWxmOaAkZiWpa0gsbMqP8R0kN0fTK5IEPSSAnfb9c+XuHkWnXxkwfXaxpRRGzkoCk8bmQc074SU/8BTBCC0Twelv4AAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 04&apos; title=&apos;&apos; src=&apos;/blog/static/3991ce5db6e87ba8359a0841c3af73b8/ca1dc/jenkins-cicd-04.png&apos; srcset=&apos;/blog/static/3991ce5db6e87ba8359a0841c3af73b8/e7570/jenkins-cicd-04.png 170w,
+/blog/static/3991ce5db6e87ba8359a0841c3af73b8/f46e7/jenkins-cicd-04.png 340w,
+/blog/static/3991ce5db6e87ba8359a0841c3af73b8/ca1dc/jenkins-cicd-04.png 680w,
+/blog/static/3991ce5db6e87ba8359a0841c3af73b8/02d09/jenkins-cicd-04.png 1020w,
+/blog/static/3991ce5db6e87ba8359a0841c3af73b8/6efed/jenkins-cicd-04.png 1113w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;신규 발급된 토큰의 private key는 잘 저장해두고 복사한다.&lt;/p&gt;
+&lt;h4&gt;jenkins git-hub credentials 등록&lt;/h4&gt;
+&lt;p&gt;마찬가지로 jenkins에서도 해당 토큰을 연결해야한다. 서로 상호 연결한다고 생각하면 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Jenkins 대시보드 &gt; Jenkins 관리 &gt; Security &gt; Credentials &gt; global &gt; Add Credentials&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/f90cd8b54a01a0ede229fe21f5803832/d9c1b/jenkins-cicd-05.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 80%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAAAsTAAALEwEAmpwYAAABJklEQVR42q2TyU7DMBCG8/4vwokX4MIdiSPiXk6lcYKXeLenM9OmggayCUu/7DjW538WN6dTB1Jq6DoJfa9AKcMyxoLWA7RtD3RmnK314H38Uw18G6UUOB4/WYfDB4IVbB1NrfX2kXMGITp0NyBMQwiB9+nMWv1wSBsSQRKdaW3AIzCXzBclUkqLau4tO+cZSIAYI7sMIeI6Ibwsagr0HlohGKq0Bm0Mz5QGckp5ntOvQCkVRLRfr4UqmAq6PY2hz2gCHH9Q/rwPHDI5Y+0JmZxRhallKExn3ba2ud+wzjGQKjb25s3hCk2AFGrA6q7N2WIOGUbVvBZiqybAAd+q6L642v8CrDVh3i7NvOZlzL6UXAAeXiw8vfkLfIcmwMdXC8/vHvaOM7TM7E5od7hDAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 05&apos; title=&apos;&apos; src=&apos;/blog/static/f90cd8b54a01a0ede229fe21f5803832/ca1dc/jenkins-cicd-05.png&apos; srcset=&apos;/blog/static/f90cd8b54a01a0ede229fe21f5803832/e7570/jenkins-cicd-05.png 170w,
+/blog/static/f90cd8b54a01a0ede229fe21f5803832/f46e7/jenkins-cicd-05.png 340w,
+/blog/static/f90cd8b54a01a0ede229fe21f5803832/ca1dc/jenkins-cicd-05.png 680w,
+/blog/static/f90cd8b54a01a0ede229fe21f5803832/02d09/jenkins-cicd-05.png 1020w,
+/blog/static/f90cd8b54a01a0ede229fe21f5803832/d9c1b/jenkins-cicd-05.png 1040w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Username with password&lt;/code&gt;로 설정 후 본인의 git 아이디를 username에, 패스워드는 로그인할때 패스워드가 아닌, 방금 위에서 발급받은 token을 넣는다! git auth 정책이 바뀌어 일반 비밀번호를 넣으면 auth 에러가 발생하니, 반드시 유의할것!!!&lt;/p&gt;
+&lt;h3&gt;jenkins docker-hub credentials 등록&lt;/h3&gt;
+&lt;p&gt;도커 이미지를 push 하기 위해서는 jenkins에 도커 자격 증명이 필요하다. github 계정 등록과 같은 방법으로 docker hub 계정을 등록하면 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Jenkins 대시보드 &gt; Jenkins 관리 &gt; Security &gt; Credentials &gt; global &gt; Add Credentials&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Username with password&lt;/code&gt;로 설정 후 본인의 docker 아이디를 username에, 패스워드를 입력 후 ID에는 아무값이나 구분자로 넣어준다.&lt;/p&gt;
+&lt;h4&gt;ec2 jenkins public key 등록&lt;/h4&gt;
+&lt;p&gt;application 서버로 사용할 ubuntu ec2에도 public key가 있다. 해당 부분은 아래 ec2 생성 후 다시 보는걸 추천한다. 이후 ec2에 접속 후 &lt;code class=&quot;language-text&quot;&gt;authorized_keys&lt;/code&gt; 를 ssh 경로에 만들어, jenkins의 public key를 등록한다. jenkins 컨테이너 내에서 만든 &lt;code class=&quot;language-text&quot;&gt;id_rsa.pub&lt;/code&gt; 파일을 그대로 넣으면 된다.&lt;/p&gt;
+&lt;p&gt;jenkins 컨테이너의 public key 내용 복사&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;cat&lt;/span&gt; /root/.ssh/id_rsa.pub&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ec2 서버에 authorize_keys 파일에 내용 붙여넣기&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;vi&lt;/span&gt; ~/.ssh/authorized_keys&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;ssh agent 플러그인 설치&lt;/h3&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/949ad36235600b2188d44586b5513ec4/89260/jenkins-cicd-07.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 47.05882352941176%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAABYlAAAWJQFJUiTwAAAA5UlEQVR42q2RC2vDMAyE/f//4+ggtOTpxk/ZcZab5KRbKGMMOsHHCRufz7KyNiCEBOciEyohEHJekdLCWqr+FTWOEy6Xd2zbhueyNqLvNLwnRMqIcYdIWA7OPRsSJYyjRilrNRHjh7fn1NNkYI0/EpcK0bc+96rv72iaFtdrD60dp8kwhrCWD7zx+jR7NJ2DvjvMM6s2dSySWkZzRtIq7z3atsPt1vFzqCZc1z2t5oO5FBjr+flyWajqnGd2lTVB+pSqYYDMcRiGuvFqqWUpxw0OMs9zPT5qn+vvfBnin0v9lOgVw0/2ZsD6BsqKlgAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 07&apos; title=&apos;&apos; src=&apos;/blog/static/949ad36235600b2188d44586b5513ec4/ca1dc/jenkins-cicd-07.png&apos; srcset=&apos;/blog/static/949ad36235600b2188d44586b5513ec4/e7570/jenkins-cicd-07.png 170w,
+/blog/static/949ad36235600b2188d44586b5513ec4/f46e7/jenkins-cicd-07.png 340w,
+/blog/static/949ad36235600b2188d44586b5513ec4/ca1dc/jenkins-cicd-07.png 680w,
+/blog/static/949ad36235600b2188d44586b5513ec4/02d09/jenkins-cicd-07.png 1020w,
+/blog/static/949ad36235600b2188d44586b5513ec4/9d567/jenkins-cicd-07.png 1360w,
+/blog/static/949ad36235600b2188d44586b5513ec4/89260/jenkins-cicd-07.png 2072w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/da2abe98988c3e9ca2e446260b735e46/b5cb9/jenkins-cicd-09.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 55.294117647058826%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAABYlAAAWJQFJUiTwAAABTElEQVR42q2R2XKDMAxF/f/fl+lbZtKEfTEYvAAGbiW1SdOkeWo1c0ayMdeyrqrrDklSYBgciqJBmpYwxkruuhEhLPB+xjQtRBR47xXK+4C+H8A5xhXLErFtu2Rec805hBnOBVjrqZ4wz/FX1DCMOBzecD5f8Cr4YNv2yLIKl0uOpumla+emJ9S2bfQDP2nGvu8/hHjN31fCjg7LvGD9esXLDkPwqOuGbs/pVk/PizdBEVtZYEWat9B9wGgX6mQWLHX0Od94m7VyjgVbVBUbUpAho8xtXTeBa6YZJmTao+w8dWthekOmGTLTSiN8OYfSesDplAvHY0JOd2RSoMMeWjuM4yTCadkhIxIirQze8w4lzdIYQzPVMgYRZHfbVtNmK0/n+jFklgKE/S7fn2EUG6K1ps5KoSyrJ3Me5O/4FruGujp5hU34Syj8c3wAFhVaLZ9ktp0AAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 09&apos; title=&apos;&apos; src=&apos;/blog/static/da2abe98988c3e9ca2e446260b735e46/ca1dc/jenkins-cicd-09.png&apos; srcset=&apos;/blog/static/da2abe98988c3e9ca2e446260b735e46/e7570/jenkins-cicd-09.png 170w,
+/blog/static/da2abe98988c3e9ca2e446260b735e46/f46e7/jenkins-cicd-09.png 340w,
+/blog/static/da2abe98988c3e9ca2e446260b735e46/ca1dc/jenkins-cicd-09.png 680w,
+/blog/static/da2abe98988c3e9ca2e446260b735e46/02d09/jenkins-cicd-09.png 1020w,
+/blog/static/da2abe98988c3e9ca2e446260b735e46/9d567/jenkins-cicd-09.png 1360w,
+/blog/static/da2abe98988c3e9ca2e446260b735e46/b5cb9/jenkins-cicd-09.png 1532w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;jenkins에서 직접 붙여쓰는 자격 증명과 별개로 ec2에 직접 ssh로 연결하기 위한 &lt;code class=&quot;language-text&quot;&gt;SSH Agent&lt;/code&gt; 플러그인, docker 파이프라인을 위한 &lt;code class=&quot;language-text&quot;&gt;Docker Pipeline&lt;/code&gt;을 available plugins에서 설치한다.
+Docker Pipeline은 미리 설치해놔서 검색 사진이 없다ㅎ&lt;/p&gt;
+&lt;h3&gt;jenkins docker in docker 설치&lt;/h3&gt;
+&lt;p&gt;jenkins 내에서 docker image build를 통해 docker hub에 push 하는 작업을 위해 docker 설치가 필요하다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--user&lt;/span&gt; root jenkins /bin/bash&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;터미널에서 jenkins 컨테이너 접속 후 아래 명렁어에 따라 docker를 설치를 한다. docker 컨테이너 내에서 docker를 설치해야하는 아이러니한 상황이긴하다. 이를 docker in docker라고 한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;apt-get&lt;/span&gt; update &lt;span class=&quot;token parameter variable&quot;&gt;-y&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;apt-get&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; -y&lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+    ca-certificates &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+    gnupg &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+    lsb-release&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; /etc/apt/keyrings&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-fsSL&lt;/span&gt; https://download.docker.com/linux/debian/gpg &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; gpg &lt;span class=&quot;token parameter variable&quot;&gt;--dearmor&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-o&lt;/span&gt; /etc/apt/keyrings/docker.gpg&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token string&quot;&gt;&quot;deb [arch=&lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;dpkg --print-architecture&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt; signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  &lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;lsb_release &lt;span class=&quot;token parameter variable&quot;&gt;-cs&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt; stable&quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;tee&lt;/span&gt; /etc/apt/sources.list.d/docker.list &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; /dev/null&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;apt-get&lt;/span&gt; update &lt;span class=&quot;token parameter variable&quot;&gt;-y&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;apt-get&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;install&lt;/span&gt; docker-ce docker-ce-cli containerd.io docker-compose-plugin &lt;span class=&quot;token parameter variable&quot;&gt;-y&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--version&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;docker 설치가 완료 되었으면 버전이 뜰 것이다. 확인해보면 된다. 여기까지 진행했으면, jenkins에서 설정해야하는 사항은 끝이다. &lt;/p&gt;
+&lt;h2&gt;app server ec2&lt;/h2&gt;
+&lt;h3&gt;ec2 생성&lt;/h3&gt;
+&lt;p&gt;springboot application server를 띄울 ec2 하나를 띄운다. 나는 ubuntu os로 만들었으며, 어떠한 것으로 하든 상관 없다. 그 외 EC2 생성 방법은 생략하며, 키페어를 저장하고 위치만 잘 확인해두도록 한다.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/8d30bbceddeb9f8bda0b7a9599445ccc/ffc38/jenkins-cicd-08.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 45.88235294117647%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAABYlAAAWJQFJUiTwAAABAklEQVR42nVSi46DMAzj//9yu0kH7UQLDaU8c3EYDETPUjQRN46TrIh9z8ZaJup4HEdOKelvFyMHInbe8+P54hCC5odh4F5q8N22gZ8/L3bOM3UddxIFHkEwisCyLDzNM88SW/Gogr9lyUmEwIObpkmFYcIYq82Hz/uCBXXtVABY15XPIHEJR2fsb5DHRGd8BGu29p0tattW3ec4NPO+ueSKrahRl9gBbN8dpqwgGjnncg6dOqwqI8smJbAvAMuPsT+EEF+OuCyrI4/YBKWLMUYEq0NwdwHB/3YIzspBbw69XLJpGl0wLnjGJpgfef9rXQRBYmQiuoz1PUo4jnIf+c79Acv/wN9l12CEAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 08&apos; title=&apos;&apos; src=&apos;/blog/static/8d30bbceddeb9f8bda0b7a9599445ccc/ca1dc/jenkins-cicd-08.png&apos; srcset=&apos;/blog/static/8d30bbceddeb9f8bda0b7a9599445ccc/e7570/jenkins-cicd-08.png 170w,
+/blog/static/8d30bbceddeb9f8bda0b7a9599445ccc/f46e7/jenkins-cicd-08.png 340w,
+/blog/static/8d30bbceddeb9f8bda0b7a9599445ccc/ca1dc/jenkins-cicd-08.png 680w,
+/blog/static/8d30bbceddeb9f8bda0b7a9599445ccc/02d09/jenkins-cicd-08.png 1020w,
+/blog/static/8d30bbceddeb9f8bda0b7a9599445ccc/ffc38/jenkins-cicd-08.png 1110w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;다만 보안그룹 설정 시, 인바운드 설정이 필요하다. nginx를 통해 들어올 TCP 80포트 및 application server의 blue green 배포를 통해 들어올 8080, 8081 포트는 열어둬야 한다. 또한 ec2에 ssh 연결을 해야하므로 ssh 연결을 위한 22번 포트도 반드시 열어둬야한다. https 443 포트는 선택이다.&lt;/p&gt;
+&lt;h3&gt;ec2 docker 설치&lt;/h3&gt;
+&lt;p&gt;ec2에는 docker-compose 명령어를 통해 blue green 배포를 한다. 따라서 docker 및 docker-compose 설치가 필요하다. 설치 내용은 생략한다.&lt;/p&gt;
+&lt;h3&gt;deploy.sh&lt;/h3&gt;
+&lt;p&gt;jenkins에서 ssh 연결 후 실행시킬 deploy 쉘 스크립트가 필요하다. 이때 nginx가 설치(생략)되어 있어야하며 blue가 켜져있으면 green을, green이 켜져있으면 blue를 배포하는 간단한 스크립트이다. ec2의 root 경로에 작성했다.&lt;/p&gt;
+&lt;p&gt;{컨테이너명} 부분은 필히 본인이 사용할 이름으로 변경해야한다! ex) {컨테이너명} -&gt; test-container&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;## 1&lt;/span&gt;
+&lt;span class=&quot;token assign-left variable&quot;&gt;EXIST_BLUE&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;docker-compose&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;컨테이너명&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;-blue &lt;span class=&quot;token parameter variable&quot;&gt;-f&lt;/span&gt; docker-compose.blue.yaml &lt;span class=&quot;token function&quot;&gt;ps&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; Up&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;&lt;span class=&quot;token variable&quot;&gt;$EXIST_BLUE&lt;/span&gt;&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;docker-compose&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;컨테이너명&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;-blue &lt;span class=&quot;token parameter variable&quot;&gt;-f&lt;/span&gt; ~/docker-compose.blue.yaml up &lt;span class=&quot;token parameter variable&quot;&gt;-d&lt;/span&gt;
+    &lt;span class=&quot;token assign-left variable&quot;&gt;BEFORE_COMPOSE_COLOR&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;green&quot;&lt;/span&gt;
+    &lt;span class=&quot;token assign-left variable&quot;&gt;AFTER_COMPOSE_COLOR&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;blue&quot;&lt;/span&gt;
+    &lt;span class=&quot;token assign-left variable&quot;&gt;BEFORE_PORT_NUMBER&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;8081&lt;/span&gt;
+    &lt;span class=&quot;token assign-left variable&quot;&gt;AFTER_PORT_NUMBER&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;docker-compose&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;컨테이너명&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;-green &lt;span class=&quot;token parameter variable&quot;&gt;-f&lt;/span&gt; ~/docker-compose.green.yaml up &lt;span class=&quot;token parameter variable&quot;&gt;-d&lt;/span&gt;
+    &lt;span class=&quot;token assign-left variable&quot;&gt;BEFORE_COMPOSE_COLOR&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;blue&quot;&lt;/span&gt;
+    &lt;span class=&quot;token assign-left variable&quot;&gt;AFTER_COMPOSE_COLOR&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;green&quot;&lt;/span&gt;
+    &lt;span class=&quot;token assign-left variable&quot;&gt;BEFORE_PORT_NUMBER&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;
+    &lt;span class=&quot;token assign-left variable&quot;&gt;AFTER_PORT_NUMBER&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;8081&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;&lt;span class=&quot;token variable&quot;&gt;${AFTER_COMPOSE_COLOR}&lt;/span&gt; server up(port:&lt;span class=&quot;token variable&quot;&gt;${AFTER_PORT_NUMBER}&lt;/span&gt;)&quot;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;## 2&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;token for-or-select variable&quot;&gt;cnt&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;서버 응답 확인중..(&lt;span class=&quot;token variable&quot;&gt;${cnt}&lt;/span&gt;/10)&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token assign-left variable&quot;&gt;UP&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-s&lt;/span&gt; http://localhost:$&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;AFTER_PORT_NUMBER&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;/actuator/health &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;UP&apos;&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;&lt;span class=&quot;token variable&quot;&gt;${UP}&lt;/span&gt;&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; 
+        &lt;span class=&quot;token keyword&quot;&gt;then&lt;/span&gt;
+	    &lt;span class=&quot;token function&quot;&gt;sleep&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;
+	    &lt;span class=&quot;token builtin class-name&quot;&gt;continue&lt;/span&gt;       
+        &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt;
+            &lt;span class=&quot;token builtin class-name&quot;&gt;break&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;fi&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;$cnt&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-eq&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;서버가 정상적으로 구동되지 않았습니다.&quot;&lt;/span&gt;
+    &lt;span class=&quot;token builtin class-name&quot;&gt;exit&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;## 3&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-i&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;s/&lt;span class=&quot;token variable&quot;&gt;${BEFORE_PORT_NUMBER}&lt;/span&gt;/&lt;span class=&quot;token variable&quot;&gt;${AFTER_PORT_NUMBER}&lt;/span&gt;/&quot;&lt;/span&gt; /etc/nginx/conf.d/service-url.inc
+&lt;span class=&quot;token function&quot;&gt;sudo&lt;/span&gt; nginx &lt;span class=&quot;token parameter variable&quot;&gt;-s&lt;/span&gt; reload
+&lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Deploy Completed!!&quot;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;## 4&lt;/span&gt;
+&lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;&lt;span class=&quot;token variable&quot;&gt;$BEFORE_COMPOSE_COLOR&lt;/span&gt; server down(port:&lt;span class=&quot;token variable&quot;&gt;${BEFORE_PORT_NUMBER}&lt;/span&gt;)&quot;&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker-compose&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;컨테이너명&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;-&lt;span class=&quot;token variable&quot;&gt;${BEFORE_COMPOSE_COLOR}&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-f&lt;/span&gt; docker-compose.&lt;span class=&quot;token variable&quot;&gt;${BEFORE_COMPOSE_COLOR}&lt;/span&gt;.yaml down&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4&gt;docker-compose&lt;/h4&gt;
+&lt;p&gt;위 쉴에서 구동할 blue, green docker-compose 파일이 필요하다. docker-compose.blue.yaml, docker-compose.green.yaml 각각의 compose 파일을 작성했다. deploy.sh 파일과 같은 ec2 root 경로에 작성했다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;version: &lt;span class=&quot;token string&quot;&gt;&apos;3.1&apos;&lt;/span&gt;
+ 
+services: 
+  api:
+    image: &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;dockerID&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;/&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;컨테이너명&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    container_name: &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;컨테이너명&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;-blue
+    environment:
+      - &lt;span class=&quot;token assign-left variable&quot;&gt;&lt;span class=&quot;token environment constant&quot;&gt;LANG&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;ko_KR.UTF-8
+      - &lt;span class=&quot;token assign-left variable&quot;&gt;UWSGI_PORT&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;
+    ports:
+      - &lt;span class=&quot;token string&quot;&gt;&apos;8080:8080&apos;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;version: &lt;span class=&quot;token string&quot;&gt;&apos;3.1&apos;&lt;/span&gt;
+ 
+services: 
+  api:
+    image: &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;dockerID&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;/&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;컨테이너명&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    container_name: &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;컨테이너명&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;-green
+    environment:
+      - &lt;span class=&quot;token assign-left variable&quot;&gt;&lt;span class=&quot;token environment constant&quot;&gt;LANG&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;ko_KR.UTF-8
+      - &lt;span class=&quot;token assign-left variable&quot;&gt;UWSGI_PORT&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;8081&lt;/span&gt;
+    ports:
+      - &lt;span class=&quot;token string&quot;&gt;&apos;8081:8080&apos;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;jenkins pipeline&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sh&quot;&gt;&lt;pre class=&quot;language-sh&quot;&gt;&lt;code class=&quot;language-sh&quot;&gt;pipeline &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    agent any
+
+    environment &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        gitCredential &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;git&apos;&lt;/span&gt;
+        dockerCredential &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;docker-hub&apos;&lt;/span&gt;
+        sshCredential &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;ssh&apos;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    stages &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        stage&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;Prepare&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            steps &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;Clonning Repository&apos;&lt;/span&gt;
+                &lt;span class=&quot;token function&quot;&gt;git&lt;/span&gt; branch: &lt;span class=&quot;token string&quot;&gt;&apos;master&apos;&lt;/span&gt;, 
+                url: &lt;span class=&quot;token string&quot;&gt;&apos;{연결할 git 레포지토리 http url}&apos;&lt;/span&gt;,
+                credentialsId: gitCredential
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+            
+            post &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                success &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; 
+                    &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;Successfully Cloned Repository&apos;&lt;/span&gt;
+                &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+                failure &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                    error &lt;span class=&quot;token string&quot;&gt;&apos;This pipeline stops here...&apos;&lt;/span&gt;
+                    
+                &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+        stage&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;Bulid Gradle&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+          steps &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;Bulid Gradle&apos;&lt;/span&gt;
+            dir&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;.&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;token function&quot;&gt;sh&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;./gradlew clean build&apos;&lt;/span&gt;           
+			&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          post &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+          	success &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; 
+              &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;Successfully Project Build&apos;&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+            failure &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+              error &lt;span class=&quot;token string&quot;&gt;&apos;This pipeline stops here...&apos;&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+        
+        stage&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;Bulid Docker&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+          steps &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;Bulid Docker&apos;&lt;/span&gt;
+            script &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                dockerImage &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; docker.build&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;{도커아이디}/{컨테이너명}&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;--platform linux/x86_64 .&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          post &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+	        success &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; 
+              &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;Successfully Docker Build&apos;&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+            failure &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+              error &lt;span class=&quot;token string&quot;&gt;&apos;This pipeline stops here...&apos;&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+        stage&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;Push Docker&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+          steps &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;Push Docker&apos;&lt;/span&gt;
+            script &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                docker.withRegistry&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;&apos;&lt;/span&gt;, dockerCredential&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                    dockerImage.push&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; 
+                &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          post &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+          	success &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; 
+              &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;Successfully Docker push&apos;&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+            failure &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+              error &lt;span class=&quot;token string&quot;&gt;&apos;This pipeline stops here...&apos;&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+        
+		stage&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;Docker Run&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            steps &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;token builtin class-name&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;Pull Docker Image &amp;amp; Docker Image Run&apos;&lt;/span&gt;
+                sshagent &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;credentials: &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;sshCredential&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;token function&quot;&gt;sh&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ssh -o StrictHostKeyChecking=no ubuntu@{ec2 IP주소} &apos;./deploy.sh&apos;&quot;&lt;/span&gt;
+                &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;위 스크립트에 &lt;code class=&quot;language-text&quot;&gt;{XXX}&lt;/code&gt; 해놓은 부분은 본인이 사용하고자 하는 명명에 맞게 변경해서 사용해야한다. 그대로 사용하면 절대안된다ㅎ
+참고로 jenkins 컨테이너 내에 pull 받은 git repo는 /var/jenkins_home/workspace 경로에 있다.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/09dc5c394b17c24cf995813f122c821a/04dd0/jenkins-cicd-10.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 47.64705882352941%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAKCAYAAAC0VX7mAAAACXBIWXMAABYlAAAWJQFJUiTwAAABLUlEQVR42q2S627DIAyFef8nrKamTRsgBEiVK5BLe2qsTeqk7VdryUL6bB9jgzDOojxfcDh8wZgG75pIS8I8B4zjhGVZ3hd8PB74pIn/An81yuyHv4ZfuTgeCyil8ambipQStm371S3FSDsdse877zWEwDnzPKMfBqzr+s0j52Q+DCNzHjnDlBZKWhk66/jlp2lC61soqTBSgawUiuKEruuJ36BpskBikuLnU0miA0RjPUxteOwcsCSmjILUFZ0alXGw3sLfHDGFSksYWxOjprrhmKolLvKKmmqFrC0J1pioU7a4RVRTibIvUCdqsFHRZuDoVOEKOV9gmBvoKOH2hvPP/RE+Woj8B7uuQ95ltrRG6FCxm6hxuzt2vzYskD3zllh7t3CZU66KV/jk8ATppAfMhqxoaAAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;jenkins cicd 10&apos; title=&apos;&apos; src=&apos;/blog/static/09dc5c394b17c24cf995813f122c821a/ca1dc/jenkins-cicd-10.png&apos; srcset=&apos;/blog/static/09dc5c394b17c24cf995813f122c821a/e7570/jenkins-cicd-10.png 170w,
+/blog/static/09dc5c394b17c24cf995813f122c821a/f46e7/jenkins-cicd-10.png 340w,
+/blog/static/09dc5c394b17c24cf995813f122c821a/ca1dc/jenkins-cicd-10.png 680w,
+/blog/static/09dc5c394b17c24cf995813f122c821a/02d09/jenkins-cicd-10.png 1020w,
+/blog/static/09dc5c394b17c24cf995813f122c821a/9d567/jenkins-cicd-10.png 1360w,
+/blog/static/09dc5c394b17c24cf995813f122c821a/04dd0/jenkins-cicd-10.png 1826w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;중간중간 에러 있어서 9트에 완료..&lt;/p&gt;</content:encoded></item><item><title><![CDATA[spring @Autowired 간단 정리]]></title><description><![CDATA[spring에서는 Bean을 IoC(Inversion of Control) 컨테이너에 의해 관리된다. spring에서 객체는 IoC 컨테이너로부터 의존성을 주입 받을 수 있으며, 다양한 방법으로 의존성을 주입받을 수 있다. 그 중 @Autowired…]]></description><link>https://wo3okey.github.io/blog/spring-autowired/</link><guid isPermaLink="false">https://wo3okey.github.io/blog/spring-autowired/</guid><pubDate>Sat, 04 Nov 2023 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;spring에서는 Bean을 IoC(Inversion of Control) 컨테이너에 의해 관리된다. spring에서 객체는 IoC 컨테이너로부터 의존성을 주입 받을 수 있으며, 다양한 방법으로 의존성을 주입받을 수 있다. 그 중 @Autowired에 대해 알아본다.&lt;/p&gt;
+&lt;h2&gt;IoC 컨테이너&lt;/h2&gt;
+&lt;p&gt;Ioc는 spring에만 있는 개념은 아니며, 의존 관계를 역전하여 의존성을 주입하는 방식을 뜻한다. 이때 spring에서 IoC를 제공하는 객체가 Ioc 컨테이너이다.&lt;/p&gt;
+&lt;h3&gt;DI&lt;/h3&gt;
+&lt;p&gt;IoC 컨테이너는 bean의 생명주기를 관리하며, 객체의 생명주기 및 의존성을 관리한다. 의존성은 말 그대로 특정 객체에서 다른 객체 정보를 필요로 하여 서로 의존 관계에 있는 것들 뜻한다. 이를 spring에서는 IoC 컨테이너에 의해 DI(Dependency Injection) 의존성 주입을 받게 된다. spring에서는 그저 DI를 원하는 객체에 &lt;code class=&quot;language-text&quot;&gt;@Autowired&lt;/code&gt;와 같은 표기를 통해서 Ioc 컨테이너에게 의존성 주입 대상임을 알려주기만 하면 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;StudentService&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Autowired&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;StudentRepository&lt;/span&gt; studentRepository
+    &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;register&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Autowired&lt;/h2&gt;
+&lt;p&gt;@Autowired는 spring에서 가장 일반적으로 사용되는 어노테이션으로, 의존성 주입을 위해 사용된다. @Autowired는 타입(Type)을 기반으로 자동으로 의존성을 주입한다. spring은 클래스의 생성자, 필드, 메서드 등에서 @Autowired이 적용된 대상을 찾고, 해당하는 의존성을 자동으로 주입한다.&lt;/p&gt;
+&lt;h3&gt;Injections&lt;/h3&gt;
+&lt;p&gt;@Autowired로 의존성을 주입 받는 방법은 생성자, setter, 필드 주입 방식이 있다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Constructor Injection&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt;  &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt;  &lt;span class=&quot;token class-name&quot;&gt;ExampleCase&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ChocolateService&lt;/span&gt; chocolateService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;DrinkService&lt;/span&gt; drinkService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Autowired&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ExampleCase&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;ChocolateService&lt;/span&gt;  chocolateService&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;DrinkService&lt;/span&gt;  drinkService&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+   	    &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;chocolateService &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; chocolateService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+   	    &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;drinkService &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; drinkService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Setter Injection&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt;  &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt;  &lt;span class=&quot;token class-name&quot;&gt;ExampleCase&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ChocolateService&lt;/span&gt; chocolateService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;DrinkService&lt;/span&gt; drinkService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Autowired&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;setChocolateService&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;ChocolateService&lt;/span&gt; chocolateService&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;chocolateService &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; chocolateService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Autowired&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;setDrinkService&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;DrinkService&lt;/span&gt;  drinkService&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;drinkService &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; drinkService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Field Injection&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt;  &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt;  &lt;span class=&quot;token class-name&quot;&gt;ExampleCase&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Autowired&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ChocolateService&lt;/span&gt;  chocolateService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Autowired&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;DrinkService&lt;/span&gt;  drinkService&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;일반적으로 &lt;code class=&quot;language-text&quot;&gt;Constructor Injection&lt;/code&gt;의 생성자 주입 방식을 선택한다. 이유는 아래와 같다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;SRP(single responsibility principle)
+필드 주입 방식은 의존성 주입 방식이 매우 간단하다는 장점이 있다. 이는 양날의 검으로 너무 쉽게 의존성을 주입하다보니, 막무가내로 하나의 객체에 책임을 부여하도록 개발할 수 있는 것이다. 즉, 객체지향 원칙중 단일 책임의 원칙에 어긋나게 개발할 위험에 노출시킬 수 있다. 생성자에 의존관계를 기입하면 한눈에 파악하기 좋을 뿐더러, 너무 많아진 파라미터는 심리상 뭔가 잘못됨(?)을 느낄 수 있게 해준다.&lt;/li&gt;
+&lt;li&gt;DI 컨테이너의 결합성과 테스트 용이성
+Field Injection을 사용하면 필요한 의존성을 가진 클래스를 곧바로 인스턴스화 시킬 수 없다. 이유는 final 선언시 필드값을 초기화 해야하기 때문이다. 객체는 생성과 동시에 생성에 필요한 파라미터와 함께 초기화 하여 메모리에 올라가게 되는데, 필드를 초기화 할 수 없는 객체가 되어 단위테스트와 같은 mocking 객체를 만들 수 없다. 또한 final 키워드가 붙지 않기 때문에 객체 생성 이후 불변성을 보장할 수 없게된다.&lt;/li&gt;
+&lt;li&gt;순환 의존성
+Constructor Injection에서 순환 의존성(A객체 &amp;#x3C;-&gt; B객체 서로간에 참조)을 가질 경우 순환참조 관련된 오류가 발생되어, 순환 의존성을 알 수 있다. 하지만 Field Injection의 경우 해당 객체가 생성되는 시점에 알 수 있기 때문에 런타임간에 오류가 발생될 수 있다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Inject, Resource, Quirifire, Primay&lt;/h3&gt;
+&lt;p&gt;@Autowired는 타입(Type)을 기반으로 자동으로 의존성을 주입한다. Spring은 클래스의 생성자, 필드, 메서드 등에서 @Autowired 적용된 대상을 찾고, 해당하는 의존성을 자동으로 주입한다. 그 외 @Inject, @Resource, @Quirifire, @Primay 방법도 간단하게 알아보자.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Inject&lt;/code&gt;&lt;br&gt;
+@Inject는 JSR-330(Java Dependency Injection specification)에 정의된 어노테이션이다. 즉, spring이 아닌 java 스펙에서 제공하는 DI 어노테이션인 것이다. @Autowired와 기능적으로 동일하다. Spring에서도 @Inject을 지원하며, @Autowired와 동일하게 타입(Type)을 기반으로 자동 의존성 주입을 수행한다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Resource&lt;/code&gt;&lt;br&gt;
+@Resource은 @Inject와 마찬가지로 java 스펙에서 제공하는 JSR-250(Java Common Annotations specification)에 정의된 어노테이션으로, 이름(Name)을 기반으로 의존성 주입을 수행한다. @Resource은 주입할 빈을 지정할 때 이름을 사용하며, 기본적으로 필드 이름과 동일한 이름의 빈을 찾아서 주입한다. 또한 name 속성을 사용하여 다른 이름의 빈을 명시적으로 지정할 수도 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;@Qualifier&lt;/code&gt;&lt;br&gt;
+@Qualifier은 같은 타입(Type)의 여러 빈 중에서 특정 빈을 선택할 때 사용한다. spring에서 같은 타입의 여러 빈을 찾았을 때, 어떤 빈을 주입해야 할지 명확하게 판단할 수 없는 경우 @Qualifier을 함께 사용하면 된다. @Qualifier은 주입할 빈을 식별하는 데 사용되는 추가적인 정보를 제공한다. 예를 들어, @Qualifier(&quot;myBean&quot;)과 같이 사용하여 myBean이라는 특정 빈을 주입할 수 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;@Primary&lt;/code&gt;&lt;br&gt;
+@Primary은 같은 타입(Type)의 여러 빈 중에서 기본 빈(Default Bean)을 지정할 때 사용한다. Spring은 @Primary이 적용된 빈을 우선적으로 선택하여 주입하며, 여러 개의 빈이 있을 때 기본 빈을 명시적으로 지정하고자 할 때 사용한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;결론&lt;/h2&gt;
+&lt;p&gt;실무에서 개발을 하더라도 bean의 타입과 이름을 겹칠 정도의 개발을 할 일은 거의 없다고 봐도 무관하다. 새로운 공통 컴포넌트나 프레임워크를 만들지 않는 이상 말이다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Spring에서 앵간하면 이상한 주입 방식 쓰지말고, 장점 많은 Constructor(생성자) Injection 방식의 @Autowired로 의존성을 주입받자.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h3&gt;&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://velog.io/@aidenshin/%ED%95%84%EB%93%9C%EC%A3%BC%EC%9E%85-%EC%83%9D%EC%84%B1%EC%9E%90-%EC%A3%BC%EC%9E%85%EB%B0%A9%EC%8B%9D%EC%9C%BC%EB%A1%9C-%EB%B3%80%EA%B2%BD&quot;&gt;https://velog.io/@aidenshin/%ED%95%84%EB%93%9C%EC%A3%BC%EC%9E%85-%EC%83%9D%EC%84%B1%EC%9E%90-%EC%A3%BC%EC%9E%85%EB%B0%A9%EC%8B%9D%EC%9C%BC%EB%A1%9C-%EB%B3%80%EA%B2%BD&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[clean architecture 클린 아키텍처 리뷰]]></title><description><![CDATA[소프트웨어 시스템 소프트웨어(soft ware)는 부드러운(soft)와 제품(ware…]]></description><link>https://wo3okey.github.io/blog/clean-architecture/</link><guid isPermaLink="false">https://wo3okey.github.io/blog/clean-architecture/</guid><pubDate>Mon, 16 Oct 2023 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/3a0941ba369f32774622e5ea6d4fbeaa/78d47/clean-architecture-01.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 118.82352941176471%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAYCAYAAAD6S912AAAACXBIWXMAAAsTAAALEwEAmpwYAAADY0lEQVR42q1VTWskRRhONEYFjypehcWrd3+Huqt/wT+hN8U/4E0IJJEQcnLYQyC5BFSMmc1OsrCyy84k89Xd09X10VXV3dXVj291ZiRmmVkFC96pj6l+6nm/19buDADrd/avk2zM59fmsr72b8f8ww8V8H5Yv+Le4qGXHvj7oN/v/5DnObyzSV27X+nyrge+rms8KEt8LKV87/gYG69itT6fN3/udM4Ggz5QMe9LRkc1iW9nVxXQOk/y3PyWa/1TWZbf0B/36ZF3/2GuxWJvb29ze3v7lLEUvuR1abK6ssIZMXJy1veKDZHzESoTHgKmUeTTNIUx5suFGe4wvNg8Ojo6q6oSZR57KyYoVAwjxtBiilxE4OmoEdm0zljiLi8vql7vAnEcf7EEEG9eXj7pGqNR6cSXmoEYEuAEVs2I3QQivQaLB0inL5DFfW9VAmK5HPD09I9uUVg4k3orpy1Dza+h2BVUCzgilkOw5BrJdOAlrdNVDHd2drppOgsm8o2v4b1DSSxtzmDyDJIHtcc3gKNnPucxMeTLATudziPG2A1g49E0TSveNyirGraoYGyB3FgIpTx5erXKu7u7j7TWmMdK8CCsNWi8R/jYWAtNZyFWhRQEWIBz/mA5w4cPz8PlBeD+/j6IdRsmxW1AelRIuWC4HPDg4OBcKdUC1pQeW1tbODk5adUuy+o/A75FKp9nWTa3YdMyC7/1XZV1PgcsQhwuB6RsebxQmVIFjqR2Ds5VqFxwCqVfcIo25JTcB9bE8P4KhjuPVU5OqY3XFHshW4yc3ISNFpTLElLMIEQKNpt4LdlqwG73rBdULNXUV5bfOINyV7EBePwcPOmDRc+RjJ8iHj71IrlCPBmuAuz2ClLD2YxyeYxSp7AygkoHkLMX4LNrSrtnmAWJrnxObAnw86WAh4eHvevhsLWhpYIQWLrKUraoRvFpoyTznEU+Y1PH0qiSPAlO+WwZ4NsXF71eGjKltiUVhZoYUgGIPVWbRlPpMnIMV2SoSaiMeTgFo9RShm+MRqPfW8NRsqFxFDMlrV1g6Y2WKTnlz1zJX6TkHc7Zj1yIb4UQH73UjxabKIruWWu/p/13JF+RfFoBn9B8j+QDkndCo1r7vwfFa9ukjo+PN1Z2wXmb3LjV0W63z7aFrgL4C4I74X4k0FM0AAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;clean architecture 01&apos; title=&apos;&apos; src=&apos;/blog/static/3a0941ba369f32774622e5ea6d4fbeaa/ca1dc/clean-architecture-01.png&apos; srcset=&apos;/blog/static/3a0941ba369f32774622e5ea6d4fbeaa/e7570/clean-architecture-01.png 170w,
+/blog/static/3a0941ba369f32774622e5ea6d4fbeaa/f46e7/clean-architecture-01.png 340w,
+/blog/static/3a0941ba369f32774622e5ea6d4fbeaa/ca1dc/clean-architecture-01.png 680w,
+/blog/static/3a0941ba369f32774622e5ea6d4fbeaa/78d47/clean-architecture-01.png 800w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;소프트웨어 시스템&lt;/h2&gt;
+&lt;p&gt;소프트웨어(soft ware)는 부드러운(soft)와 제품(ware)의 합성어이다. 즉 소프트웨어를 만드는 이유는 기계의 행위를 쉽게 변경할 수 있도록 하기 위해서다. 그게 아니라면 하드웨어라 불렀을 것이다. 소프트웨어는 반드시 부드러워야 하며, 이는 곧 변경하기 쉬어야 한다는 것을 뜻한다. 새로운 기능이나 변경이 쉬운 소프트웨어를 개발하기 위해 시스템 아키텍처는 독립적이어야 한다.&lt;/p&gt;
+&lt;h2&gt;구조, 객체, 함수형 프로그래밍&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;구조적 프로그래밍은 제어흐름의 직접적인 전환에 부과되는 규율&lt;/li&gt;
+&lt;li&gt;객체 지향 프로그래밍은 제어흐름의 간접적인 전환에 부과되는 규율&lt;/li&gt;
+&lt;li&gt;함수형 프로그래밍은 변수 할당에 부과되는 규율&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;각 패러다임은 우리가 코드를 작성하는 방식의 형태를 한정 시킬뿐 변한게 없다. 또한 1946년 엘런 튜링이 최초의 코드를 작성할 때 사용한 소프트웨어 규칙과 지금의 규칙은 조금도 다르지 않다.
+즉 도구와 하드웨어는 변했지만 소프트웨어는 그대로이다. 그대로 소프트웨어는 순차(sequence), 분기(selection), 반복(iteration), 참조(indirection)으로 구성될 뿐 그 이상 그 이하도 아니다.&lt;/p&gt;
+&lt;h2&gt;SOLID&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;SRP는 하나의 일만 해야한다는 의미로 잘못 알고 있는 경우가 많다. 단일 모듈은 변경의 이유가 오직 하나 뿐이어야 한다는 뜻이다. 즉, 단일 모듈은 오직 하나의 사용자 또는 이해관계자에 대해서만 책임져야 한다.&lt;/li&gt;
+&lt;li&gt;OCP의 목표는 시스템을 확장하기 쉬운 동시에 변경으로 인해 시스템이 너무 많은 영향을 받지 않도록 하는데 있다. 이러한 목표를 달성하려면 시스템 컴포넌트 단위를 분리하고, 저수준 컴포넌트에서 발생한 변경으로부터 고수준 컴포넌트를 보호할 수 있는 형태의 의존성 계층구조가 만들어지도록 해야한다.&lt;/li&gt;
+&lt;li&gt;LSP는 아키텍처 수준까지 확장할 수 있고, 반드시 확장해야한다. 치환 가능성을 조금이라도 위배하면 시스템 아키텍처가 오염되어 상당량의 별도 메커니즘을 추가해야 할 수 있기 때문이다.&lt;/li&gt;
+&lt;li&gt;ISP는 불필요한 인터페이스 상속 관계에 의해 잠재되는 문제 상황들이 생길 수 있다. 불필요한 짐을 실은 무언가에 의존하면 예상치 못한 문제에 빠질 수 있다는 것이다.&lt;/li&gt;
+&lt;li&gt;DIP는에서 말하는 &apos;유연성이 극대화된 시스템&apos;이란 소스 코드 의존성이 추상(abstract)에 의해 의존하며 구체에는 의존하지 않는 시스템이다. 이를 위해서는 안정된 추상화를 지향해야하며, 변동성이 큰 구체 클래스를 참조, 파생하지 말아야 한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;아키텍처&lt;/h2&gt;
+&lt;h3&gt;경계선 긋기&lt;/h3&gt;
+&lt;p&gt;소프트웨어 아키텍처에서 경계선을 그리려면 먼저 시스템을 컴포넌트 단위로 분할해야 한다. 일부 컴포넌트는 핵심 업무 규칙에 해당하며, 나머지는 플러인으로 핵심 업무와는 직접적인 관련이 없지만 필수 기능을 포함한다. 그런 다음 컴포넌트 사이의 화살표가 특정 방향, 즉 핵심 업무를 향하도록 이들 컴포넌트의 소스를 배치한다. 이는 의존성 역전 원칙과 안정된 추상화 원칙을 응용한 것이다. 의존성 화살표는 저수준 세부사항에서 고수준의 추상화를 향하도록 배치된다.&lt;/p&gt;
+&lt;h3&gt;소리치는 아키텍처&lt;/h3&gt;
+&lt;p&gt;좋은 아키텍처는 유스케이스를 그 중심에 두기 때문에 프레임워크나 도구, 환경에 전혀 구애받지 않고 유스케이스를 지원하는 구조를 아무런 문제 없이 기술할 수 있다. 좋은 아키텍처는 유스케이스에 중점을 두며, 관심사에 대한 결합은 분리시킨다. 아키텍처는 시스템을 이야기해야하며, 시스템에 적용한 프레임워크에 대해 이야기해서는 안된다. 당신이 헬스 케어 시스템을 구축하고 있다면 새로 들어온 개발자는 소스를 보고 &quot;오 헬스 케어 시스템이군!&quot; 해야만 한다.&lt;/p&gt;
+&lt;h2&gt;클린 아키텍처&lt;/h2&gt;
+&lt;p&gt;&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/7ff6398f0ff57389df4c9fb6d0cef418/a546b/clean-architecture-02.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 73.52941176470587%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAPCAYAAADkmO9VAAAACXBIWXMAAAsTAAALEwEAmpwYAAADkUlEQVR42lWU61MaVxjG+Xv7H3Q6bZqZTmuVi4B4C43G1EQSL9HUCxo0KgK7wAK7rMvCAgsoglx1UjttZvrrAccP/fDMO2fmfZ95zvM+5zjq9TrVapVarYZt1xidr6+usIt5qqZG2chhFfJYhkpJV0TVxFkTvY8zT7Bte1wdpmnSbrfpdLsM+12a13VK9hWSJJFJxTGzUa7NFNclFftSpmakBNLctm/odLoCnTG6Yr5QKOAolUpjsl6nTUIrE4q3eBFtsZy9Iyj1WU30OdGuaN92uLv/Qm9wN8Zo5onsiXAkThBadNotPkTzeI8bBLIZ3Po2E8YaU/o6AS2GO2KxuCNRE9fs93tjZYPB4H8YDoePhNVyiXBc5btXp3j1jwT//Yi38BtLsXlmMgss/LNNoL7BxEGWzYRNp9Wk3RUe25Wx9yNUKpWxh4Zh4EhnFObCZTypT7xkjy1pBcMzifHDc8yJX4jsLbL0dZf52iH+SJ1YRqchliNdnJMQPsuyTDKZHHueSqVw7H6WmY02WLzb53c7xJ3PT2clQFkKYq15+WvKw7vIPL5+CNdnhQ+nBRRD5iR6SjwW4+zsDEVRxunQNA1HKCzjiuSYFgNbewF6Lhd6KshNf4NK4w3doA95aZqFr9u4ExeshHVUu0RW18lms2PkcjmazSaWZQnCgwSekzwz9xtsRRYZON1ko7N0HrYpWiv0FrzIbwPM/b2FNymzGjEZdm65E5seDobjZQxE7fX7j7HZPY7hO6nisdbx6y+5nvXRn/NR3PLRCE7zICyY2ZriuTbHTMxkORJn+XKVoLaGbCpkQ+/57HRi7O8LAUJhOp0i8Eee7zff80zx4Nxzk5l10XZ7sPxuXoQm+VH1485sM7mhci76s1cakpmmUrcpJ9PEN4U9mQxFkWmHXSmzf3LB1K6JKxFmshJk7mETf+01s8MN/PchnMo60yd1Qp/S9G9bPHT/5KH1hUFzSHF7j1Oni1L48FFhyRoF+4a9cwVvuIrrNMuviR1+Tr9hQt7AeRbDc2izepSmLoJ92+tQbojsWTYtu0U9pyLt7FBVtUeFo3Q/Pb2YkL96lOenpQjfPJvn2+l1Xh7oHEaTNBs298N79JrB7OVrArlXxMwk6tt3nE5MYOzuUigWcYxWraQVcqrKpZ4nk5Y4jhyxf3DA0WGYpHTBZV5FFQpGEckIr+JSYoxR/lIi0Ml4AjmRYPQv/AcULu9Q4Re8NAAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;clean-architecture&apos; title=&apos;&apos; src=&apos;/blog/static/7ff6398f0ff57389df4c9fb6d0cef418/ca1dc/clean-architecture-02.png&apos; srcset=&apos;/blog/static/7ff6398f0ff57389df4c9fb6d0cef418/e7570/clean-architecture-02.png 170w,
+/blog/static/7ff6398f0ff57389df4c9fb6d0cef418/f46e7/clean-architecture-02.png 340w,
+/blog/static/7ff6398f0ff57389df4c9fb6d0cef418/ca1dc/clean-architecture-02.png 680w,
+/blog/static/7ff6398f0ff57389df4c9fb6d0cef418/a546b/clean-architecture-02.png 772w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;clean-architecture&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;클린 아키텍처에서 소스코드의 의존성은 반드시 안쪽으로, 고수준의 정책을 향해야한다. 우리는 외부 원에 위치한 어떤 것도 내부의 원에 영향을 주지 않도록 설계해야 한다.&lt;/p&gt;
+&lt;h3&gt;엔티티&lt;/h3&gt;
+&lt;p&gt;엔티티는 전사적인 핵임 업무 규칙을 캡슐화하며, 외부의 무언가가 변경되더라도 엔티티가 변경될 가능성은 지극히 낮아야 한다. 즉, 가장 고수준인 규칙을 캡슐화 하는 것이다. 운영 관점에서 특정 애플리케이션이 무언가 변경이 필요하더라도 엔티티 계층에는 절대로 영향을 주어서는 안된다.&lt;/p&gt;
+&lt;h3&gt;유스케이스&lt;/h3&gt;
+&lt;p&gt;유스케이스 계층의 소프트웨어는 애플리케이션에 특화된 업무 규칙을 포함한다. 또한 유스케이스 계층의 소프트웨어는 시스템의 모든 유스케이스를 캡슐화하고 구현한다. 유스케이스는 엔티티로 들어오고 나가는 데이터 흐름을 조정하며, 엔티티가 자신의 핵심 업무 규칙을 사용해서 유스케이스의 목적을 달성하도록 이끈다. 하지만 이 계층에서 발생한 변경이 엔티티에 절대 영향을 줘서는 안된다. 운영 관점의 변경은 유스케이스가 영향 받으며, 이 계층의 소프트웨어에도 경향을 줄 것이다.&lt;/p&gt;
+&lt;h3&gt;인터페이스 어댑터&lt;/h3&gt;
+&lt;p&gt;인터페이스 어댑터 계층은 일련의 어댑터들로 구성된다. 어댑터는 데이터를 유스케이스와 엔티티에게 가장 편리한 형식에서 데이터베이스나 웹 같은 외부 에이전시에게 가장 편리한 형식으로 변환한다. 또한 이 계층에는 데이터를 외부 서비스와 같은 외부적인 형식에서 유스케이스나 엔티티에서 사용되는 내부적인 형식으로 변환하는 또 다른 어댑터가 필요할 수 있다.&lt;/p&gt;
+&lt;h2&gt;한줄 리뷰&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;유연하고 변경에 강한 소프트웨어를 개발하기 위해, 클린 아키텍처는 고수준의 도메인 중심에서 경계를 명확히 할 수 있는 방법을 가이드 한다.&lt;/p&gt;
+&lt;/blockquote&gt;</content:encoded></item><item><title><![CDATA[spring AOP의 proxy]]></title><description><![CDATA[AOP AOP(Aspect Oriented Programming)는 컴퓨터 패러다임의 일종으로, 관점 지향 프로그래밍이라 불린다. 이러한 AOP의 메커니즘은 프로그램을 관심사(Concerns…]]></description><link>https://wo3okey.github.io/blog/srping-aop/</link><guid isPermaLink="false">https://wo3okey.github.io/blog/srping-aop/</guid><pubDate>Sat, 07 Oct 2023 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;AOP&lt;/h2&gt;
 &lt;p&gt;AOP(Aspect Oriented Programming)는 컴퓨터 패러다임의 일종으로, 관점 지향 프로그래밍이라 불린다. 이러한 AOP의 메커니즘은 프로그램을 관심사(Concerns) 기준으로 크게 핵심 관심사와 횡단 관심사로 분류한다.&lt;/p&gt;
 &lt;p&gt;&lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; margin-bottom: 16px;&apos;&gt;
       &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/blog/static/280a2aa9aa70730bcb882e914e1abdfc/b4ad3/spring-aop-01.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
@@ -310,11 +993,13 @@
 &lt;hr&gt;
 &lt;h3&gt;&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://brunch.co.kr/@alden/39&quot;&gt;https://brunch.co.kr/@alden/39&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://jaemunbro.medium.com/elastic-search-%EC%83%A4%EB%93%9C-%EC%B5%9C%EC%A0%81%ED%99%94-68062271fb64&quot;&gt;https://jaemunbro.medium.com/elastic-search-%EC%83%A4%EB%93%9C-%EC%B5%9C%EC%A0%81%ED%99%94-68062271fb64&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://fdv.gitbooks.io/elasticsearch-cluster-design-the-definitive-guide/content/a-few-things-you-need-to-know-about-lucene.html&quot;&gt;https://fdv.gitbooks.io/elasticsearch-cluster-design-the-definitive-guide/content/a-few-things-you-need-to-know-about-lucene.html&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://blog.naver.com/occidere/222855956229&quot;&gt;https://blog.naver.com/occidere/222855956229&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://icarus8050.tistory.com/51&quot;&gt;https://icarus8050.tistory.com/51&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://vince-kim.tistory.com/m/39&quot;&gt;https://vince-kim.tistory.com/m/39&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ko_kr/elasticloadbalancing/latest/application/introduction.html&quot;&gt;https://docs.aws.amazon.com/ko_kr/elasticloadbalancing/latest/application/introduction.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://blog.naver.com/PostView.nhn?blogId=dilrong&amp;#x26;logNo=221689556862&quot;&gt;https://blog.naver.com/PostView.nhn?blogId=dilrong&amp;#x26;logNo=221689556862&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://jaehoney.tistory.com/155&quot;&gt;https://jaehoney.tistory.com/155&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://imagekit.io/blog/what-is-content-delivery-network-cdn-guide/&quot;&gt;https://imagekit.io/blog/what-is-content-delivery-network-cdn-guide/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://poiemaweb.com/js-async&quot;&gt;https://poiemaweb.com/js-async&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://aws.amazon.com/ko/blogs/korea/new-application-load-balancer-simplifies-deployment-with-weighted-target-groups/&quot;&gt;https://aws.amazon.com/ko/blogs/korea/new-application-load-balancer-simplifies-deployment-with-weighted-target-groups/&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content:encoded></item><item><title><![CDATA[spring servelt은 무엇인가?]]></title><description><![CDATA[servelt 클라이언트의 HTTP request에 대해 response 처리를 담당하는 java 프로그램이다. 정적인 웹 서버에서 동적인 페이지를 제공할 수 있도록 도와주는 어플리케이션이라 보면 된다. 서블릿은 절대 spring…]]></description><link>https://wo3okey.github.io/blog/servelt/</link><guid isPermaLink="false">https://wo3okey.github.io/blog/servelt/</guid><pubDate>Wed, 05 Jul 2023 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;servelt&lt;/h2&gt;
 &lt;p&gt;클라이언트의 HTTP request에 대해 response 처리를 담당하는 java 프로그램이다. 정적인 웹 서버에서 동적인 페이지를 제공할 수 있도록 도와주는 어플리케이션이라 보면 된다. 서블릿은 절대 spring을 위해 만들어진 개념이 아니다. 웹 애플리케이션 개발 시 불필요한 request, reponse 로직을 추상화하고 개발자들이 구현체만 만들어 사용할 수 있도록 제공하는 표준 개발 방식일 뿐이다.&lt;/p&gt;
 &lt;h3&gt;servelt container&lt;/h3&gt;
