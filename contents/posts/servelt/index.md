@@ -1,0 +1,74 @@
+---
+layout: post
+title: spring servelt은 무엇인가?
+description: "
+spring boot로 개발을 시작하거나 또는 오래 하다보면 `servlet`의 개념을 놓치기 쉽다. 간단하게 정리해보자.
+"
+tags: [spring, servelt]
+date: 2023-07-05
+update: 2023-07-05
+series: "spring"
+---
+
+## servelt
+클라이언트의 HTTP request에 대해 response 처리를 담당하는 java 프로그램이다. 정적인 웹 서버에서 동적인 페이지를 제공할 수 있도록 도와주는 어플리케이션이라 보면 된다. 서블릿은 절대 spring을 위해 만들어진 개념이 아니다. 웹 애플리케이션 개발 시 불필요한 request, reponse 로직을 추상화하고 개발자들이 구현체만 만들어 사용할 수 있도록 제공하는 표준 개발 방식일 뿐이다.
+
+### servelt container
+서블릿 컨테이너는 말그대로 서블릿을 담고 관리해주는 컨테이너로, 서블릿의 생명주기를 관리해주는 역할을 한다. 우리가 흔히 아는 `tomcat`이 바로 java 기반의 서블릿 컨테이너이자 WAS이다.
+
+![](servlet-01.png)
+
+서블릿 컨테이너는 클라이언트의 요청을 받으면 HttpServletRequest, HttpServletResponse 객체를 생성하며 POST, GET 등의 HTTP method에 따라 동적인 페이지를 생성하여 응답한다. 
+각 요청에 따라 생성된 서블릿은 `싱글톤` 객체로 관리하며, 최초 요청시 `init()`을 통해 인스턴스를 생성하고 이후 요청에는 재활용한다. 그리고 서버 종료와 같은 종료시 `destroy()`를 통해 인스턴스를 메모리에서 해제한다. 또한 클라이언트 요청마다 새로운 쓰레드를 생성하며, 동시에 여러 요청을 처리할 수 있도록 `멀티쓰레드`를 지원한다. 이는 곧 적절한 쓰레드풀 설정이 필요한 이유이다.
+
+### front controller
+서블릿 요청을 각 서블릿이 모든 역할을 처리하면 비즈니스 로직 외 공통적인 처리에 중복적인 개발 요소가 많아진다. 이에 따라 전방에서 각 요청의 역할을 controller에게 위임 해주는 방법을 `front controller pattern`이라고 한다.
+
+![](servlet-03.png)
+
+
+## spring framework
+spring framework는 serlvet을 이용하여 웹 개발을 편하게 만들 수 있도록 제공한다. spring framework에서는 `dispatcher servlet`을 통해 웹 요청을 처리하며, 이는 fron controller pattern의 구현체다. 그 외에도 `handler mapping`, `handler adapter`, `view resolver`등 에게 역할을 위임 한다.
+
+![](servlet-02.png)
+
+spring MVC에서는 `dispatcher-servlet.xml`을 통해 직접 서블릿 설정이 가능하다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+    <mvc:annotation-driven />
+    <context:component-scan base-package="com.hipcoding.board.controller"/>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+</beans>
+```
+
+spring boot는 내부적으로 내장 tomcat을 가지고 있다. 즉 spring boot가 실행되면서 내부적으로 tomcat(servlet container)이 실행된다.
+```
+2023-03-08 10:50:42.413  INFO 11287 --- [(2)-172.30.1.48] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-03-08 10:50:42.413  INFO 11287 --- [(2)-172.30.1.48] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-03-08 10:50:42.416  INFO 11287 --- [(2)-172.30.1.48] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+```
+
+
+## 결론
+spring boot로 개발하다보면 dispatcher servlet을 직접 건드릴 일이 사실상 없다. 그러다보면 자연스럽게 servlet에 대한 개념을 잊고 개발하기 십상이다.
+> 아무리 웹 개발 프레임워크가 좋아졌지만, 서블릿은 여전히 HTTP 웹 어플리케이션 개발의 핵심이다.
+
+##
+***
+###
+* <https://erainnovator.com/servlet-life-cycle/>
+* <https://docs.spring.io/spring-framework/docs/3.0.0.RC2/spring-framework-reference/html/ch15s02.html>
+* <https://terasolunaorg.github.io/guideline/5.0.1.RELEASE/en/Overview/SpringMVCOverview.html#overview-of-spring-mvc-processing-sequence>
+

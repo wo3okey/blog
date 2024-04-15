@@ -1,0 +1,78 @@
+---
+layout: post
+title: kafka basic
+description: "kafka는 대량의 데이터를 높은 처리량으로 실시간으로 처리할 수 있도록 설계되어 있으며, 분산 시스템의 높은 가용성과 유연성을 활용하여 안정적이고 데이터 손실 없이 데이터를 전송할 수 있다. 이는 다양한 서비스에서 활용되며, 웹 사이트의 대규모 로그 데이터 수집, 이벤트 처리, 메세지 큐, 스트리밍 등의 용도로 여러 기업 및 서비스에서 사용하고 있다. kafka가 다양하게 사용되는 이유는 여러가지 특징적인 이유를 알아본다.
+"
+tags: [kafka]
+date: 2023-04-02
+update: 2023-04-02
+series: "kafka"
+---
+
+## kafka 란
+`kafka`는 [LinkedIn](https://www.linkedin.com/) 에서 개발한 대용량 처리를 위한 분산형 스트리밍 플랫폼이다. 
+
+
+### 특징
+* 높은 처리량과 낮은 지연시간
+    * batch 처리 시스템을 통해 대량의 데이터를 높은 처리량으로 처리할 수 있도록 설계됨
+    * 메세지의 지연 시간이 매우 낮아 실시간 데이터 처리에 적합함
+    * 타 시스템과 비교하여 kafka의 producer, consumer 모두 압도적인 처리량 성능을 보임
+![](kafka-03.png)
+
+* 확장성과 내고장성
+    * kafka는 다중 producer, 다중 consumer를 지원하여 동시에 메세지를 전송하거나 동시에 topic의 데이터를 읽을 수 있음
+    * producer, consumer뿐 아니라 kafka의 구성요소는 수평적 확장(scale-out)에 용이함
+    * broker의 장애나 네트워크 오류 등 시스템 문제에도 데이터 유실이 발생하지 않도록 내고장성을 보장
+
+* 파일시스템
+    * kafka는 데이터를 message queue에 보존하여 consumer는 장애가 발생해도 나중에 데이터를 처리할 수 있음
+    * kafka broker 파일시스템에 저장한 메세지는 관리자가 설정한 기간에 따라 저장, 사용 후 삭제됨
+    * 저장된 partition은 IO를 cache memory를 통해 처리하므로 성능적으로 유리함
+
+* 유연성
+    * producer, consumer, broker 등 다양한 구성 요소를 활용하여 유연한 데이터 처리 파이프라인 구성이 가능
+    * 다양한 기술과 연동이 가능하여 데이터 처리 시스템 구축시 중요한 역할 담당
+
+
+## kafka 구조
+kafka는 기본적으로 `pub/sub(펍/섭)` 이라고 하는 publish/subscribe 형태의 시스템 모델을 구현한 분산 이벤트 시스템이다. 
+
+### pub/sub
+pub/sub 모델은 데이터를 생산하는 주체인 `producuer`, 소비하는 주체인 `subscriber`, 그리고 이들 사이에 중재자 역할을 하는 `broker`로 구성된 낮은 결합도를 가진 구조를 뜻한다.
+
+![](kafka-01.png)
+
+### kafka architecture
+pub/sub 모델 구조를 구현한 kafka의 기본적인 아키텍처 모습이다. 용어를 정리하면서 자세히 알아보자.<br>
+(topic: 1개, replica: 3, partition: 3)
+
+![](kafka-02.png)
+
+| 구성 | 설명 |
+| --- | --- |
+| producer | - 데이터를 생성하여 kafka cluster에 전송하는 application 서버 <br> - broker를 통해 미리 설정해둔 topic으로 데이터를 전송 |
+| consumer | - kafka cluster에서 데이터를 소비하는 application 서버이며 <br> - broker를 통해 미리 설정해둔 topic과 partiton의 데이터를 수신 |
+| broker | - kafka cluster의 중심 요소로, 데이터를 저장하고 처리하는 역할을 담당 <br> - 여러개의 물리 node에 설치될 수 있고 topic에 대한 message queue를 관리 |
+| topic | - kafka에서 데이터를 주고 받는 대상 <br> - 데이터를 관리하는 논리적 단위로 여러 partition으로 나누어져 있음  |
+| partition | - topic 내의 데이터를 저장하는 물리적 단위 <br> - partition은 데이터를 순서대로 저장하고 여러개의 broker에 분산하여 저장 <br> - partition에는 데이터의 상대적 위치를 표시하는 offset이 있으며, 이를 이용해 이전에 가져간 데이터 위치 정보를 알 수 있음 |
+| zookeeper | - kafka cluster의 구성 정보와 broker 상태 정보를 저장하는 분산 코디네이터 <br> - kafka cluster 전체의 안정성을 유지하는 역할을 담당 <br> - kafka cluster를 실행하기 위해서는 반드시 먼저 실행 되어야함 |
+| consumer group | - 각각의 consumer를 group 단위로 묶어, topic의 데이터를 병렬로 소비할 수 있도록 함 <br> - topic내 partition은 consumer group당 오로지 하나의 consumer만 소유권(ownership)을 갖고 소비할 수 있음 <br> - group내 consumer 추가/삭제 시 partition 소유권을 재분배하는 reblancing이 발생함 |
+| replication | - 가용성을 위해 여러 broker를 서버에 배포하고 partition을 복제하는 것 <br> - 위 구조의 주황색P partition을 `leader`이라 하며, 나머지는 `follow`이라 함 <br> - 데이터 읽고 쓰기는 오직 ledaer가 담당하며, follow는 leader와 동기화하며 leader의 장애시 follow 중 하나가 leader의 역할을 수행 |
+
+
+kafka의 구조에서 producer의 화살표가 broker를 향하는건 설명과 함께 이해가 되겠지만, consumer는 데이터를 수신하는 입장에서 화살표의 방향이 broker로 향하고 있다. 잘못 그린것이 아니다. 이는 consumer가 broker로 부터 pull 방식으로 데이터를 수신하기 때문이다.
+
+### push/pull
+consumer가 broker로 부터 데이터를 가져오는 방법은 크게 push, pull 두가지의 방식으로 정리할 수 있다. push 방식은 broker가 데이터를 consumer에게 전달하기 위해 두 시스템 간의 연결을 유지하고 있어야 한다. 이는 곧 불필요한 커넥션 리소스를 갖게 된다. 반면에 pull 방식은 consumer가 일정 주기로 broker에게 요청하여 데이터를 가져오게 되므로 두 시스템간에 관계가 느슨해질 수 있다. 하지만 이는 곧 consumer가 요청하는 일정 주기간에 처리 지연이 발생하거나 처리량이 줄 수 있다. 
+
+그렇다면 kafka는 왜 지연이 발생할 수 있는 pull 방식을 선택했을까? kafka에서는 pull방식의 단점을 극복하기 위해 consumer로 부터 batch 단위로 데이터를 가져오도록 처리하여 지연 문제를 완화 시켰다. 또한 consumer group를 이용하여 consumer간에 데이터 메세지를 공유하고 분배함으로써 높은 처리량과 빠른 속도를 통해 단점을 극복했다. 이러한 kafka의 구조를 통해 pull 방식의 장점을 극대화 하고 실시간 처리 시스템에 고가용성 데이터 파이프라인 아키텍처로 사용하고 있다.
+
+## 그래서?
+그래서 kafka의 고성능, 고가용성은 실로 유명하고 다양한 서비스들로 인해 증명 되어있다. message queue(MQ)만을 위해 쓰는 기업도 있는 반면, kafka의 성능과 장점을 극대화 시킬 수 있는 실시간 스트리밍, 로그분석 데이터 파이프라인과 같은 서비스 개발을 위해 많은 기업들이 kafka로 전환하거나 신규로 만들고있다. spring에서도 `spring-kafka`를 지원하여 쉽게 서비스를 개발할 수 있도록 지원하고 있다. 이는 다음번에 한번 정리 해봐야겠다.
+> 2023년 현재 글 작성 기준, kafka는 실시간 대용량 데이터 메세지 처리를 위한 분산 시스템계의 깡패이다.
+
+##
+***
+###
+* <https://notes.stephenholiday.com/Kafka.pdf>
