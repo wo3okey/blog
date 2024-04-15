@@ -7,7 +7,7 @@ import { Link } from "gatsby"
 import Title from "components/Title"
 import Divider from "components/Divider"
 import TagList from "components/TagList"
-import CategoryIcon from "components/Icon"
+import CategoryIcon2 from "components/Icon"
 
 const PostListWrapper = styled.div`
   @media (max-width: 768px) {
@@ -98,7 +98,7 @@ const PostList = ({ postList }) => {
         return (
           <>
             <PostWrapper>
-              <CategoryIcon category={series}></CategoryIcon>
+              <CategoryIcon2 category={series}></CategoryIcon2>
               <SeriesHeader>
                 <Link to={`/series/${_.replace(series, /\s/g, "-")}`}>{series}</Link>
               </SeriesHeader>

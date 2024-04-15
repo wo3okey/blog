@@ -6,7 +6,7 @@ import { Link } from "gatsby"
 
 import Title from "components/Title"
 import Divider from "components/Divider"
-import CategoryIconImage from "components/Icon"
+import SeriesIcon from "components/SeriesIcon"
 
 const SeriesListWrapper = styled.div`
   margin-bottom: 60px;
@@ -79,7 +79,7 @@ const SeriesList = ({ seriesList }) => {
           <>
             <SeriesWrapper>
               <Title size="bg">
-                <CategoryIconImage category={series.name}></CategoryIconImage> {" "}
+                <SeriesIcon category={series.name}></SeriesIcon> {" "}
                 <Link to={`/series/${_.replace(series.name, /\s/g, "-")}`}>
                   {series.name}
                 </Link>
