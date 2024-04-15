@@ -132,8 +132,10 @@ REST API와 같은 직접적인 http connection에 의한 처리를 하지 않�
 ##
 ***
 ###
-* <https://brunch.co.kr/@alden/39>
-* <https://jaemunbro.medium.com/elastic-search-%EC%83%A4%EB%93%9C-%EC%B5%9C%EC%A0%81%ED%99%94-68062271fb64>
-* <https://fdv.gitbooks.io/elasticsearch-cluster-design-the-definitive-guide/content/a-few-things-you-need-to-know-about-lucene.html>
-* <https://blog.naver.com/occidere/222855956229>
-* <https://icarus8050.tistory.com/51>
+* <https://vince-kim.tistory.com/m/39>
+* <https://docs.aws.amazon.com/ko_kr/elasticloadbalancing/latest/application/introduction.html>
+* <https://blog.naver.com/PostView.nhn?blogId=dilrong&logNo=221689556862>
+* <https://jaehoney.tistory.com/155>
+* <https://imagekit.io/blog/what-is-content-delivery-network-cdn-guide/>
+* <https://poiemaweb.com/js-async>
+* <https://aws.amazon.com/ko/blogs/korea/new-application-load-balancer-simplifies-deployment-with-weighted-target-groups/>
