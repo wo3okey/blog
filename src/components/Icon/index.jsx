@@ -37,7 +37,7 @@ const SeriesHeader = styled.span`
 const CategoryIcon = ({category}) => {
   return (
     <>
-    <IconImageWrapper src={`/icons/${category}.png`}></IconImageWrapper> 
+    <IconImageWrapper src={`/blog/icons/${category}.png`}></IconImageWrapper> 
     <SeriesHeader>
       <Link to={`/series/${_.replace(category, /\s/g, "-")}`}>{category}</Link>
     </SeriesHeader>
