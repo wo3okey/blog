@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 그래서 kotlin data class 상속은?
+title: kotlin data class 상속
 description: "
 java의 lombok을 사용할 필요 없도록 잘 설계된 kotlin의 data class의 활용성은 한번 사용해본 개발자라면 공감할 것이다. data class를 상속의 관점에서 알아본다.
 "
@@ -146,7 +146,7 @@ fun main() {
 false
 ```
 
-## 그래서?
+## 결론
 java, kotlin 할 것 없이 상속은 간단하고 자주 사용되는 기본적인 문법이지만, 항상 주의를 기울여야한다. 그래서 kotlin 상속시 다음 유의 사항들은 살펴보면 좋을것 같다.
 > 상속한 객체의 변수는 가능한 override 해서 사용할것.<br>
 > 반드시 부모객체의 정보를 받아야는게 아니라면, 상속이 아닌 interface를 활용하여 재정의 할것.

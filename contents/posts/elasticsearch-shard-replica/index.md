@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 그래서 elasticsearch shard, replica 값은 어떻게 설정할까?
+title: elasticsearch shard, replica 값은 어떻게 설정할까?
 description: "
 elasticsearch를 운영하기 위해서는 shard와 replica 갯수를 적절히 설정해야한다. 또한 index에 설정된 shard 수는 한번 설정하면 변경이 불가하기 때문에 운영중에 index를 변경하는 번거로움을 덜기 위해서는 적절하게 갯수를 선정하는 것이 중요하다. 그렇다고 한번 설정한 shard는 정답이 아니다. 시스템이 커지고 변경됨에 따라 언제든 변경의 여지를 두고 지켜봐야할 대상이다. 그래서 shard와 replia의 값 설정 기준에 대한 이야기를 한다.
 "
@@ -68,7 +68,7 @@ index-v2 0     r      STARTED 24008 25.1mb x.x.x.x  node2
 
 
 
-## 그래서?
+## 결론
 shard와 replica는 운영 관점에서 매우 중요한 역할을 한다. 어떻게 값을 설정하느냐에 따라 검색속도나 운영에서 미치는 영향이 매우크다. 그래서 elasticsearch의 shard와 replica 값을 설정함에 있어서 정리하자면 아래와 같다.
 >어느정도 가이드된 범위 내에서 서비스 도메인 별로 검색성능과 fail-over 관점을 잘 고려하여 각자 운영에 맞는 입맛대로 설정하면 된다.
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 그래서 kotlin inline은 무엇인가?
+title: kotlin inline 알아보기
 description: "inline 키워드는 kotlin에서 만들어진 함수 아래 단위에서 사용할 수 있는 키워드 문법이다. 장단점을 비교하고 목적성에 대해 정리한다.
 "
 tags: [kotlin, java, inline]
@@ -230,8 +230,8 @@ public static final void print5and6(@NotNull Function0 lambda, @NotNull Function
 
 java 코드의 결과를 보면 `noinline`을 적용한 첫번째 고차함수는 익명클래스를 생성하고 있고, 변수에 별도 키워드 없는 두번째 파라미터는 `inline`이 적용된 모습을 볼수 있다.
 
-## 그래서?
-그래서 모든 함수는 `inline`으로 처리하는게 좋을까? 당연히 정답은 X이다. `inline` 키워드에 대해 정리해보자.
+## 결론
+모든 함수는 `inline`으로 처리하는게 좋을까? 당연히 정답은 X이다. `inline` 키워드에 대해 정리해보자.
 
 `inline` 키워드는 고차함수를 파라미터로 받게되어, 불필요한 익명 클래스 생성을 막을 수 있도록 처리할 때 사용하면 좋다는 것을 알았다. 사실 이또한 객체 하나를 생성하는 비용보다 해당 고차함수를 파라미터로 받은 함수 자체의 로직이 크다면 의미가 없다. 왜냐면 `inline` 키워드가 붙은 함수의 코드를 옮겨오기 때문에 코드량이 2배가 되어 처리해야할 byte량이 많아진다. 
 
