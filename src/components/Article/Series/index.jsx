@@ -100,6 +100,8 @@ const Series = ({ header, series }) => {
     <SeriesWrapper>
       <SeriesHeader>
         <CategoryIcon category={header}></CategoryIcon>{" "}
+        <span>{header}</span>
+        {/* <Link to={`/series/${_.replace(header, /\s/g, "-")}`}></Link> */}
         <span>({series.length})</span>
       </SeriesHeader>
       <PostWrapper>
