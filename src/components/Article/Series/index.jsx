@@ -100,9 +100,8 @@ const Series = ({ header, series }) => {
     <SeriesWrapper>
       <SeriesHeader>
         <CategoryIcon category={header}></CategoryIcon>{" "}
-        <span>{header}</span>
-        {/* <Link to={`/series/${_.replace(header, /\s/g, "-")}`}></Link> */}
-        <span>({series.length})</span>
+        {/* <span>{header}</span> */}
+        <Link to={`/series/${_.replace(header, /\s/g, "-")}`}>{header}({series.length})</Link>
       </SeriesHeader>
       <PostWrapper>
         {filteredPosts.map((post, i) => (

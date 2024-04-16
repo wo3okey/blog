@@ -33,7 +33,7 @@ Dockerfile이 있는 경로로 이동하여 ECR에 이미지를 build 및 push �
 ```sh
 vi ~/.aws/config
 ```
-{% highlight text %}
+```sh
 [profile wookey]
 region = ap-northeast-2
 aws_access_key_id = [public key]
