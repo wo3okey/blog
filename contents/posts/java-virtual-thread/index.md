@@ -24,7 +24,7 @@ java의 thread는 native thread 모델로, 유저 thread를 만들게되면 Java
 
 virtual thread에서는 forkjoin poll에 의해서 기존 platform thread들이 carrier thread로 관리된다. 마치 JVM이 직접 관리하는 thread poll이라고 생각해도 된다. JVM heap내에서 직접 thread의 추가/삭제 등 관리에 대한 자원을 관리하며, N개의 virtual thread 매핑되어 context swiching 비용이 매우 저렴하다. 
 
-||thread|virtual thread|
+|비교|Thread|Virtual Thread|
 |------|---|---|
 |memory 사용|미리 할당된 stack|필요 할 때 heap|
 |stack 크기|~2MB|~10KB|
@@ -167,7 +167,7 @@ class CodeController {
     * 경량 스레드가 결국 platform 스레드 위에서 동작하기 때문에, thread 생성 비용에 virtual thread 생성 및 스케줄링 비용까지 포함되어 성능 낭비가 발생한다.
     * I/O Bound 작업과 같이 context switching이 빈번하지 않는 경우에는 크게 이점이 없다.
 
-### virtual thread vs kotlin coroutines
+### vs kotlin coroutines
 ```kotlin
 @RestController
 class CodeController {
